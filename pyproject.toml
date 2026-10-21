@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "matched-sensing"
+version = "0.1.0"
+description = "Matched and randomized pulse sequences and classical readout for linear observables"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24", "scipy>=1.11"]
+
+[project.optional-dependencies]
+notebook = ["jupyterlab>=4", "matplotlib>=3.7"]
+test = ["pytest>=7", "nbformat>=5", "nbclient>=0.8", "ipykernel>=6", "matplotlib>=3.7"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+

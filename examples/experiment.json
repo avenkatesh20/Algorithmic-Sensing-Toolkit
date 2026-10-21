@@ -1,0 +1,14 @@
+{
+  "frequencies_hz": [800000, 1050000, 1310000, 1720000],
+  "cosine_weights": [0.5, -0.3, 0, 0.4],
+  "sine_weights": [0.2, 0.4, 0.1, -0.2],
+  "coupling_hz": 100000,
+  "t2_s": 0.0002,
+  "amplitude_bound": 1.0,
+  "min_gap_s": 0.00000002,
+  "edge_guard_s": 0.00000002,
+  "clock_s": null,
+  "visibility": 1.0,
+  "readout_bias": 0.0,
+  "overhead_s": 0.0
+}
