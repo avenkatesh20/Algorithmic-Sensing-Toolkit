@@ -1,9 +1,10 @@
-"""Uniform random acquisition, raw counts, and reuse across linear observables."""
+"""Uniform random acquisition, raw counts or means, and reusable observables."""
 
 from dataclasses import dataclass
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 import hashlib
 import json
+import warnings
 
 import numpy as np
 
@@ -74,6 +75,51 @@ class TimedCounts:
     start_times_s: dict[str, float]
 
 
+@dataclass(frozen=True)
+class AveragedOutcomes:
+    """Raw physical means in [-1,1], keyed by row ID or in plan.rows order.
+
+    Repetitions default to the planned shot counts; a scalar, vector, or row-ID
+    mapping can supply actual counts for likelihood weighting. RQS moments keep
+    the plan's random-draw multiplicities, independently of repetition allocation.
+    """
+
+    means: Mapping[str, float] | Sequence[float] | np.ndarray
+    repetitions: int | Mapping[str, int] | Sequence[int] | np.ndarray | None = None
+
+
+def _row_values(plan, values, name, *, scalar=False):
+    if isinstance(values, Mapping):
+        if set(values) != {r["row_id"] for r in plan.rows}:
+            raise ValueError(f"{name} must match every acquisition row exactly.")
+        values = [values[r["row_id"]] for r in plan.rows]
+    elif scalar and np.ndim(values) == 0:
+        values = [values]*len(plan.rows)
+    array = np.asarray(values)
+    if array.shape != (len(plan.rows),) or np.iscomplexobj(array):
+        raise ValueError(f"Supply one real {name} per acquisition row, in plan.rows order.")
+    return array.tolist()
+
+
+def validate_averages(plan, averages):
+    """Resolve means/repetitions without rounding averaged outcomes to counts."""
+    validate_plan(plan)
+    if plan.field_mode != "phase_locked":
+        raise ValueError("Averaged outcomes require phase_locked acquisition: freely running shots at different phases need individual actual timestamps and counts.")
+    values = _row_values(plan, averages.means, "mean")
+    try:
+        values = np.asarray(values, float)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("Means must be finite numbers in [-1, 1].") from exc
+    if not np.isfinite(values).all() or np.any(abs(values) > 1):
+        raise ValueError("Means must be finite numbers in [-1, 1].")
+    repetitions = ([r["shots"] for r in plan.rows] if averages.repetitions is None else
+                   _row_values(plan, averages.repetitions, "repetitions", scalar=True))
+    repetitions = [integer(n, "repetitions", 1) for n in repetitions]
+    ids = [r["row_id"] for r in plan.rows]
+    return AveragedOutcomes(dict(zip(ids, values.tolist())), dict(zip(ids, repetitions)))
+
+
 def _times(plan, start_times_s=None):
     if start_times_s is None:
         start_times_s = [r["start_time_s"] for r in plan.rows]
@@ -132,6 +178,9 @@ def plan_acquisition(pool, *, n_shots, x_fraction=.2, seed=5,
             period = pool.duration_s+pool.experiment.overhead_s if shot_period_s is None else shot_period_s
             if not np.isfinite(period) or period < pool.duration_s+pool.experiment.overhead_s:
                 raise ValueError("shot_period_s must include sensing duration and specified per-shot overhead.")
+            cycles = np.asarray(pool.experiment.frequencies_hz)*period
+            if np.max(abs(cycles-np.rint(cycles))) < 1e-9:
+                warnings.warn("The shot period repeats every tone phase: timestamps add no phase diversity. Pulse patterns may still give a full-rank design; consider a noncommensurate period if phase diversity is desired.", RuntimeWarning, stacklevel=2)
             start_times_s = pool.start_time_s+np.arange(n_shots)*period
         starts = validate_times(start_times_s, n_shots, pool.duration_s)
         indices = rng.integers(len(pool.Z), size=n_shots)
@@ -277,23 +326,47 @@ def simulate(plan, amplitudes, *, seed=42, start_times_s=None):
 
 
 def decode(plan, counts, *, method=None, cosine_weights=None, sine_weights=None):
-    """Estimate amplitudes and optional later-chosen queries; no certified intervals.
+    """Decode count mappings, AveragedOutcomes, or an ordered array of raw means.
 
     Weights do not alter the saved acquisition or amplitude reconstruction.
     Without weights, new query-independent plans return values=().
+    Mean-valued input requires phase_locked acquisition. For mean mappings use
+    decode_averages, so a +1 count is never confused with a mean of +1.
     """
+    if isinstance(counts, AveragedOutcomes) or not isinstance(counts, (Mapping, TimedCounts)):
+        averages = counts if isinstance(counts, AveragedOutcomes) else AveragedOutcomes(counts)
+        averages = validate_averages(plan, averages)
+        return _decode_means(plan, averages.means, averages.repetitions, method,
+                             cosine_weights, sine_weights)
     validate_counts(plan, counts)
     if plan.field_mode == "free_running":
         if method not in (None, "TIMESTAMPED-ML"):
             raise ValueError("Freely running data use method='TIMESTAMPED-ML' with actual per-shot responses.")
         return _timed_estimate(plan, counts.positive_counts, _times(plan, counts.start_times_s),
                                "TIMESTAMPED-ML", cosine_weights, sine_weights)
+    means = {r["row_id"]: 2*counts[r["row_id"]]/r["shots"]-1 for r in plan.rows}
+    repetitions = {r["row_id"]: r["shots"] for r in plan.rows}
+    return _decode_means(plan, means, repetitions, method, cosine_weights, sine_weights)
+
+
+def decode_averages(plan, means, *, repetitions=None, method=None,
+                    cosine_weights=None, sine_weights=None):
+    """Decode raw means in plan.rows order or a row-ID mapping.
+
+    Rounded averages are accepted. Actual repetitions weight optional RQS-ML;
+    omitted repetitions use the plan's counts. No confidence interval is claimed.
+    """
+    return decode(plan, AveragedOutcomes(means, repetitions), method=method,
+                  cosine_weights=cosine_weights, sine_weights=sine_weights)
+
+
+def _decode_means(plan, means, repetitions, method, cosine_weights, sine_weights):
     method = "RQS" if method is None else method
     if method not in ("RQS", "RQS-ML"):
         raise ValueError("method must be 'RQS' or 'RQS-ML'.")
     p, v, mu, ny, nx = plan.pool, np.zeros(2*plan.pool.N), 0., 0, 0
     for row in plan.rows:
-        weighted = 2*counts[row["row_id"]]-row["shots"]*(1+p.experiment.readout_bias)
+        weighted = row["shots"]*(means[row["row_id"]]-p.experiment.readout_bias)
         if row["basis"] == "Y":
             v += row["outcome_sign"]*weighted*p.Z[row["sequence_index"]]; ny += row["shots"]
         else:
@@ -302,7 +375,11 @@ def decode(plan, counts, *, method=None, cosine_weights=None, sine_weights=None)
     a, floor = moment_estimate(p, v/ny, mu)
     applied, contrast = False, None
     if method == "RQS-ML":
-        a, applied, contrast = polish(p, a, plan.rows, counts)
+        rows = [dict(r, shots=repetitions[r["row_id"]]) for r in plan.rows]
+        # These are exact sufficient statistics for unrounded binary averages,
+        # and a weighted Bernoulli objective for rounded/analog averages.
+        positive = {r["row_id"]: r["shots"]*(1+means[r["row_id"]])/2 for r in rows}
+        a, applied, contrast = polish(p, a, rows, positive)
     values = _values(p, a, cosine_weights, sine_weights)
     return Estimate(tuple(a.tolist()), values, method, float(mu), float(floor),
                     bool(mu < floor), applied, contrast)

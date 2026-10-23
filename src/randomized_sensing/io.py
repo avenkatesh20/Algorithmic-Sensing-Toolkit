@@ -9,11 +9,14 @@ import numpy as np
 
 from .experiment import Experiment
 from .pulses import Pool, Sequence, audit
-from .readout import AcquisitionPlan, TimedCounts, validate_plan, validate_counts
+from .readout import (AcquisitionPlan, TimedCounts, AveragedOutcomes,
+                      validate_plan, validate_counts, validate_averages)
 
 FILES = {"bundle.json", "pool.npz", "sequences.csv", "pulses.csv", "intervals.csv",
          "acquisition.csv", "counts_template.csv", "RUN.txt"}
 COUNT_COLUMNS = ["plan_id", "row_id", "shots", "plus"]
+AVERAGE_TEMPLATE = "averages_template.csv"
+AVERAGE_COLUMNS = ["plan_id", "row_id", "repetitions", "mean"]
 
 
 def _csv(path, columns, rows):
@@ -77,6 +80,11 @@ def export_bundle(plan, directory, *, overwrite=False):
             row["start_time_s"] = ""
     _csv(directory/"acquisition.csv", columns, acquisition)
     _csv(directory/"counts_template.csv", count_columns, template)
+    files = FILES
+    if not running:
+        _csv(directory/AVERAGE_TEMPLATE, AVERAGE_COLUMNS,
+             [dict(plan_id=identity, row_id=r["row_id"], repetitions=r["shots"], mean="") for r in plan.rows])
+        files = FILES | {AVERAGE_TEMPLATE}
     timing = """The field runs continuously. Each acquisition row is ONE physical shot;
 planned_start_time_s is a proposed schedule, not a measured timestamp.
 Record EVERY actual sensing-start time in counts.start_time_s, in seconds from
@@ -119,15 +127,26 @@ Calibrate the additive readout bias.
 Finite pulse evolution, unrecorded timing jitter, field drift and calibration uncertainty
 are not modeled. Active sensing and specified per-shot overhead are separate.
 """)
+    if not running:
+        with (directory/"RUN.txt").open("a") as stream:
+            stream.write("""Alternatively, fill a COPY of averages_template.csv with raw physical means
+in [-1,1], one mean per sequence/basis row. Repetitions can record actual
+averaging counts and need not equal planned shots. Preserve row and plan IDs.
+read_averages/decode accept rounded means without integer-count conversion.
+RQS keeps the plan's random-draw weights; actual repetitions weight RQS-ML.
+Retain identical tone phases for every repetition of a row. Means from shots
+at different unknown phases cannot replace per-shot timestamped data.
+""")
     (directory/"manifest.json").write_text(json.dumps(dict(schema_version=1, plan_id=identity,
-        sha256={name: hashlib.sha256((directory/name).read_bytes()).hexdigest() for name in sorted(FILES)}), indent=2)+"\n")
+        sha256={name: hashlib.sha256((directory/name).read_bytes()).hexdigest() for name in sorted(files)}), indent=2)+"\n")
     return directory
 
 
 def load_bundle(directory):
     directory = Path(directory)
     manifest = json.loads((directory/"manifest.json").read_text())
-    if manifest.get("schema_version") != 1 or set(manifest.get("sha256", {})) != FILES:
+    if (manifest.get("schema_version") != 1 or
+            set(manifest.get("sha256", {})) not in (FILES, FILES | {AVERAGE_TEMPLATE})):
         raise ValueError("Unknown or incomplete randomized bundle manifest.")
     for name, digest in manifest["sha256"].items():
         if hashlib.sha256((directory/name).read_bytes()).hexdigest() != digest:
@@ -157,7 +176,7 @@ def load_bundle(directory):
 
 
 def write_counts(path, plan, counts):
-    if Path(path).name in FILES | {"manifest.json"}:
+    if Path(path).name in FILES | {"manifest.json", AVERAGE_TEMPLATE}:
         raise ValueError("Write measured counts to a separate file.")
     validate_counts(plan, counts)
     identity = plan.plan_id
@@ -196,3 +215,39 @@ def read_counts(path, plan):
     result = TimedCounts(counts, times) if running else counts
     validate_counts(plan, result)
     return result
+
+
+def write_averages(path, plan, means, *, repetitions=None):
+    """Save raw means, including rounded averages, separately from plan files."""
+    if Path(path).name in FILES | {"manifest.json", AVERAGE_TEMPLATE}:
+        raise ValueError("Write measured averages to a separate file.")
+    if isinstance(means, AveragedOutcomes):
+        if repetitions is not None:
+            raise ValueError("Repetitions are already part of AveragedOutcomes.")
+        averages = means
+    else:
+        averages = AveragedOutcomes(means, repetitions)
+    averages = validate_averages(plan, averages)
+    identity = plan.plan_id
+    _csv(path, AVERAGE_COLUMNS,
+         [dict(plan_id=identity, row_id=r["row_id"], repetitions=averages.repetitions[r["row_id"]],
+               mean=averages.means[r["row_id"]]) for r in plan.rows])
+
+
+def read_averages(path, plan):
+    """Load complete row-ID means/repetitions, preserving the saved acquisition."""
+    identity, expected, means, repetitions = plan.plan_id, {r["row_id"] for r in plan.rows}, {}, {}
+    with Path(path).open(newline="") as stream:
+        reader = csv.DictReader(stream)
+        if reader.fieldnames != AVERAGE_COLUMNS:
+            raise ValueError("Use the averages_template.csv columns unchanged.")
+        for row in reader:
+            key = row["row_id"]
+            if key not in expected or key in means or row["plan_id"] != identity:
+                raise ValueError("Unknown, duplicate, or mismatched average row.")
+            try:
+                means[key] = float(row["mean"])
+                repetitions[key] = int(row["repetitions"])
+            except (ValueError, TypeError) as exc:
+                raise ValueError("Fill every mean with a finite number and repetitions with a positive integer.") from exc
+    return validate_averages(plan, AveragedOutcomes(means, repetitions))

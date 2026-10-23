@@ -2,12 +2,14 @@
 
 from dataclasses import dataclass
 from numbers import Integral
+import warnings
 
 import numpy as np
 from scipy.linalg import cho_factor
 
 from matched_sensing import response
 from .experiment import Experiment
+from ._grid import CellGrid, fft_grid
 
 
 def integer(value, name, minimum=0):
@@ -24,7 +26,7 @@ class Sequence:
 
 class Pool:
     def __init__(self, experiment, duration_s, start_time_s, design_clock_s, sequences,
-                 responses, settings):
+                 responses, settings, *, allow_ill_conditioned=True):
         self.experiment = experiment
         self.duration_s, self.start_time_s = float(duration_s), float(start_time_s)
         self.design_clock_s = float(design_clock_s)
@@ -37,6 +39,14 @@ class Pool:
         eigenvalues = np.linalg.eigvalsh(self.Sigma)
         if eigenvalues[0] <= 1e-10*eigenvalues[-1]:
             raise ValueError("Pool covariance is singular or ill-conditioned; increase duration/size or relax timing.")
+        self.condition = float(eigenvalues[-1]/eigenvalues[0])
+        if self.condition > 1e3 and not allow_ill_conditioned:
+            raise ValueError(f"Pool covariance condition {self.condition:.3g} exceeds 1000; increase duration, separate tones, or relax timing. Set allow_ill_conditioned=True only to inspect this unstable design.")
+        if self.condition > 20:
+            warnings.warn(f"Pool covariance condition is {self.condition:.3g} (>20); weak response directions amplify noise. Increase duration, separate tones, or relax timing.", RuntimeWarning, stacklevel=2)
+        layout = fft_grid(np.asarray(experiment.frequencies_hz), self.duration_s,
+                          int(round(self.duration_s/self.design_clock_s)))
+        self.synthesis_method = "fft" if layout is not None else "dense"
         self.chol = cho_factor(self.Sigma)
         self.lam_max = float(eigenvalues[-1])
 
@@ -104,13 +114,15 @@ def _repair(s, cells):
 
 
 def build_pool(experiment: Experiment, *, duration_s, pool_size=None, max_pulses=None,
-               start_time_s=0., design_clock_s=2.5e-9, seed=4):
+               start_time_s=0., design_clock_s=2.5e-9, seed=4, allow_ill_conditioned=False):
     """Build independent repaired random multisines plus their exact negatives.
 
     A hardware clock takes precedence over design_clock_s. Without a hardware
     clock, design_clock_s is an explicit numerical synthesis grid. Every interval
     conservatively obeys max(min_gap_s, edge_guard_s), rounded UP to that grid.
     Arbitrary positive frequencies are supported; no commensurability is required.
+    Commensurate tones use FFTs; other tones use bounded-memory dense cell tables.
+    Warn for covariance condition >20; reject >1000 unless explicitly overridden.
     """
     f = np.asarray(experiment.frequencies_hz)
     if np.any(f <= 0):
@@ -128,18 +140,21 @@ def build_pool(experiment: Experiment, *, duration_s, pool_size=None, max_pulses
         raise ValueError("pool_size must be even, with more than 2N distinct entries.")
     if max_pulses is not None:
         max_pulses = integer(max_pulses, "max_pulses")
+    if not isinstance(allow_ill_conditioned, bool):
+        raise ValueError("allow_ill_conditioned must be a bool.")
     dwell = max(1, int(np.ceil(max(experiment.min_gap_s, experiment.edge_guard_s)/tick)))
     if length*tick+1e-15 < experiment.edge_guard_s:
         raise ValueError("duration_s is shorter than edge_guard_s.")
     seed = integer(seed, "seed")
+    if len(f) > 1 and np.min(np.diff(np.sort(f)))*duration_s < 1-1e-12:
+        warnings.warn("Minimum tone spacing * duration_s is below 1: tones may be unresolved and estimates ill-conditioned. Increase duration or separate the tones; inspect pool.condition.", RuntimeWarning, stacklevel=2)
     rng = np.random.default_rng(seed)
-    t = start_time_s + (np.arange(length)+.5)*tick
-    angles = 2*np.pi*f[:, None]*t
-    ct, st = np.cos(angles), np.sin(angles)
+    grid = CellGrid(experiment, duration_s, start_time_s, tick, length)
     sequences, vectors, attempts = [], [], 0
     while len(sequences) < size//2 and attempts < 20*(size//2):
-        theta = rng.uniform(0, 2*np.pi, (min(32, size//2-len(sequences)), len(f)))
-        patterns = np.where(np.cos(theta)@ct - np.sin(theta)@st >= 0, 1, -1).astype(np.int8)
+        theta = rng.uniform(0, 2*np.pi, (min(grid.batch_size, size//2-len(sequences)), len(f)))
+        patterns = np.where(grid.samples(theta) >= 0, 1, -1).astype(np.int8)
+        accepted = []
         for s in patterns:
             attempts += 1
             s = _repair(s, dwell)
@@ -148,10 +163,13 @@ def build_pool(experiment: Experiment, *, duration_s, pool_size=None, max_pulses
                 continue
             q = Sequence(tuple((pulses*tick).tolist()), int(s[0]))
             sequences.append(q)
-            vectors.append(q.initial_sign*response(experiment, q.switch_times_s, duration_s, start_time_s))
+            accepted.append(s)
+        if accepted:
+            vectors.extend(grid.responses(np.asarray(accepted)))
     if len(sequences) != size//2:
         raise ValueError("Too few sequences meet max_pulses; increase the cap or shorten duration_s.")
     z = np.asarray(vectors)
     settings = dict(seed=int(seed), pool_size=size, max_pulses=max_pulses,
                     attempts=attempts, minimum_dwell_cells=dwell)
-    return Pool(experiment, duration_s, start_time_s, tick, sequences, np.r_[z, -z], settings)
+    return Pool(experiment, duration_s, start_time_s, tick, sequences, np.r_[z, -z], settings,
+                allow_ill_conditioned=allow_ill_conditioned)

@@ -1,7 +1,7 @@
 # Algorithmic sensing toolkit
 
 Design single-qubit pulse sequences for known signal frequencies, export an
-experimental plan, and decode experimental counts with classical postprocessing.
+acquisition plan, and decode experimental counts with classical postprocessing.
 
 ## Start
 
@@ -106,11 +106,39 @@ result = R.decode(plan, counts, method="RQS-ML",
 print(result.values)
 ```
 
+Phase-locked data can also be supplied as **raw averaged outcomes in `[-1,1]`**,
+one value per row of `acquisition.csv` (X and Y rows are separate):
+
+```python
+# averages is your full list, e.g. [0.54, -0.1, ...], in acquisition-row order.
+result = R.decode_averages(plan, averages, repetitions=100,
+                           cosine_weights=(.5, -.3, 0., .4),
+                           sine_weights=(.2, .4, .1, -.2))
+```
+
+Rounded means are accepted without integer-count rounding. Omit `repetitions`
+to use planned shot counts, or supply a scalar, array, or row-ID mapping of
+actual repetition counts. RQS preserves the plan's random-sampling weights;
+repetition counts weight optional `method="RQS-ML"` refinement. The exported
+`averages_template.csv` provides a mean-valued alternative to the count template.
+Use `R.read_averages`/`R.write_averages` to load/save it, and pass the returned
+`AveragedOutcomes` directly to `R.decode`. An ordered array passed to `R.decode`
+is also interpreted as means; dictionaries passed directly remain positive counts.
+See [averaged-outcome conventions](docs/randomized.md#averaged-outcomes).
+
 `R.decode(plan, counts)` returns amplitudes without selecting observables.
 `R.evaluate_observables(result.amplitudes, cosine_weights=..., sine_weights=...)`
 evaluates additional queries without repeating amplitude reconstruction.
 
 The pulse pool uses repaired random multisines and their signed responses.
+Pool building automatically uses FFTs on compatible frequency grids and exact,
+bounded-memory cell integration otherwise. `pool.synthesis_method` reports
+the path, and `pool.condition` reports covariance conditioning. New builds warn
+above condition 20 and reject above 1000; `allow_ill_conditioned=True` permits
+inspection with a warning. Existing bundles remain readable. See
+[pool design and conditioning](docs/randomized.md#conditioning).
+Local timings and a reproducible benchmark are in
+[pool-build validation](docs/pool_performance.md).
 `max_pulses=None` leaves the pulse count limited by duration and timing constraints;
 a numerical cap adds a tighter limit. Without a hardware clock, `design_clock_s`
 sets the synthesis grid. Every interval conservatively obeys the larger of
@@ -142,6 +170,7 @@ does not certify a precision or confidence interval. See [the randomized model](
 | `pulses.csv`, `intervals.csv` | Pulse times and modulation intervals |
 | `acquisition.csv` | Sequence, physical X/Y basis, and repetitions |
 | `counts_template.csv` | Copy and fill with raw physical +1 outcome counts; actual start times for freely running acquisitions |
+| `averages_template.csv` | Randomized phase-locked alternative: raw means in `[-1,1]` and repetition counts |
 | `bundle.json`, `manifest.json`, `RUN.txt` | Settings, integrity hashes, and execution conventions |
 | `query_space.csv`, `query_coefficients.csv` | Shared basis and query coefficients for matched multi-query sensing |
 | `compilation.json` | Matched compilation diagnostics |
