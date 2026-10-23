@@ -1,7 +1,7 @@
 # Algorithmic sensing toolkit
 
 Design single-qubit pulse sequences for known signal frequencies, export an
-acquisition plan, and decode experimental counts with classical postprocessing.
+experimental plan, and decode experimental counts with classical postprocessing.
 
 ## Start
 
