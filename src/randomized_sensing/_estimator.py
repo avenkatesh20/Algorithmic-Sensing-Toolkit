@@ -1,31 +1,52 @@
 """RQS moment inversion, per-tone radial correction, and likelihood polish."""
 
 import numpy as np
+from concurrent.futures import ThreadPoolExecutor
 from scipy.linalg import cho_solve
 from scipy.special import j0, j1
 
 
 def moment_estimate(pool, v, mu):
+    """Phase-locked back-projection, with the shared guard and radial correction."""
+    return finish_moment(pool, cho_solve(pool.chol, v), mu)
+
+
+def finish_moment(pool, back_projection, mu):
+    """Guard a contrast-normalized back-projection and correct each tone's radius."""
     contrast = pool.experiment.contrast(pool.duration_s)
     floor = max(1e-12, contrast*np.exp(-pool.lam_max*pool.experiment.amplitude_bound**2/2))
-    a = cho_solve(pool.chol, v)/max(mu, floor)
+    a = back_projection/max(mu, floor)
+    return correct_tones(pool, a), floor
+
+
+def correct_tones(pool, a):
+    """Shared per-tone Bessel-map inversion, without changing the original map."""
     if not hasattr(pool, "_H"):
         r = np.hypot(pool.Z[:len(pool.sequences), :pool.N], pool.Z[:len(pool.sequences), pool.N:])
         variance = np.mean(r*r, axis=0)/2
         grid = np.linspace(0., max(2.4, 1.2*pool.experiment.amplitude_bound), 256)
         h = np.empty((len(grid), pool.N))
-        for start in range(0, pool.N, 8):
+        def block(start):
             rr = r[:, start:start+8]
             arg = grid[:, None, None]*rr[None]
             numerator = np.einsum("pj,xpj->xj", rr, j1(arg))/len(rr)
             denominator = variance[start:start+8]*np.mean(j0(arg), axis=1)
-            h[:, start:start+8] = numerator/np.maximum(denominator, 1e-12)
+            return start, numerator/np.maximum(denominator, 1e-12)
+
+        starts = range(0, pool.N, 8)
+        if getattr(pool, "_map_workers", 1) > 1:
+            with ThreadPoolExecutor(max_workers=2) as executor:
+                blocks = list(executor.map(block, starts))
+        else:
+            blocks = map(block, starts)
+        for start, values in blocks:
+            h[:, start:start+8] = values
         h[0] = 0.
         pool._grid, pool._H = grid, np.maximum.accumulate(h, axis=0)
     magnitude = np.hypot(a[:pool.N], a[pool.N:])
     fixed = np.array([np.interp(magnitude[j], pool._H[:, j], pool._grid) for j in range(pool.N)])
     scale = np.divide(fixed, magnitude, out=np.ones_like(fixed), where=magnitude > 1e-15)
-    return a*np.r_[scale, scale], floor
+    return a*np.r_[scale, scale]
 
 
 def polish(pool, a, rows, counts, iterations=20):

@@ -1,0 +1,1566 @@
+{
+  "trials": 4,
+  "kind": "illustrative paired errors; not T95",
+  "rows": [
+    {
+      "N": 20,
+      "case": "noiseless",
+      "norm": 0.65,
+      "n": 1666,
+      "tau_us": 80,
+      "x_fraction": 0.2,
+      "active_time_s": 0.13327999999999998,
+      "former_minimum_shots": 120,
+      "trials": [
+        {
+          "bank": 0,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.0937994776652854,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.019409208092838526
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.06327042105269229,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 0.08444662508554757
+            },
+            "former_ML_only": {
+              "max_error": 0.04938774775623334,
+              "classical_s": 0.0642829998396337,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 0,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.08550201814623154,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.014727959176525474
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.04951656689442604,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 0.1084004167933017
+            },
+            "former_ML_only": {
+              "max_error": 0.04951656689442604,
+              "classical_s": 0.046350124990567565,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.06880007251094176,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.019660249818116426
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.05349186978302657,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 0.10857433290220797
+            },
+            "former_ML_only": {
+              "max_error": 0.05349186978302657,
+              "classical_s": 0.07023237505927682,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.06414445812878812,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.020857834024354815
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.03772223756160195,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 0.10104491701349616
+            },
+            "former_ML_only": {
+              "max_error": 0.03772259467958972,
+              "classical_s": 0.05941712483763695,
+              "refused": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "N": 20,
+      "case": "t2_1ms",
+      "norm": 0.65,
+      "n": 3490,
+      "tau_us": 40,
+      "x_fraction": 0.1,
+      "active_time_s": 0.1396,
+      "former_minimum_shots": 120,
+      "trials": [
+        {
+          "bank": 0,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.06418450701511781,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.028765915893018246
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.057717498253802416,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 0.11581670818850398
+            },
+            "former_ML_only": {
+              "max_error": 0.05771853799342623,
+              "classical_s": 0.07869620807468891,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 0,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.07960485217010106,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.0417475001886487
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.059346303442099214,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 0.11437654192559421
+            },
+            "former_ML_only": {
+              "max_error": 0.059346303442099214,
+              "classical_s": 0.06053704209625721,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.07285522640208783,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.02664937498047948
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.06060846337029311,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 0.11121541587635875
+            },
+            "former_ML_only": {
+              "max_error": 0.06060835957351094,
+              "classical_s": 0.1014721249230206,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.07501508065303271,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.024344292003661394
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.08823751517326073,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 0.13062404189258814
+            },
+            "former_ML_only": {
+              "max_error": 0.08823751517326073,
+              "classical_s": 0.05447066714987159,
+              "refused": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "N": 50,
+      "case": "noiseless",
+      "norm": 0.65,
+      "n": 2700,
+      "tau_us": 80,
+      "x_fraction": 0.1,
+      "active_time_s": 0.216,
+      "former_minimum_shots": 300,
+      "trials": [
+        {
+          "bank": 0,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.06822031544484017,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.01977658295072615
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.057403632341191974,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 0.21537029184401035
+            },
+            "former_ML_only": {
+              "max_error": 0.057403632341191974,
+              "classical_s": 0.15487304190173745,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 0,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.07476159044042119,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.017679540906101465
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.06558680740489249,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 0.17338604107499123
+            },
+            "former_ML_only": {
+              "max_error": 0.06558680740489249,
+              "classical_s": 0.11325595807284117,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.07783725964929916,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.019738500006496906
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.06618426842756725,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 0.14259641687385738
+            },
+            "former_ML_only": {
+              "max_error": 0.06618426842756725,
+              "classical_s": 0.10072229197248816,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.09556960710906683,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.017967208987101912
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.07352450671510682,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 0.2783881251234561
+            },
+            "former_ML_only": {
+              "max_error": 0.07352437689722092,
+              "classical_s": 0.21916687488555908,
+              "refused": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "N": 50,
+      "case": "t2_1ms",
+      "norm": 0.65,
+      "n": 3268,
+      "tau_us": 80,
+      "x_fraction": 0.1,
+      "active_time_s": 0.26144,
+      "former_minimum_shots": 300,
+      "trials": [
+        {
+          "bank": 0,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.07602570352940446,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.02287024981342256
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.05560124887630614,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 0.209765916923061
+            },
+            "former_ML_only": {
+              "max_error": 0.05560124887630614,
+              "classical_s": 0.1533149580936879,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 0,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.092106295697539,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.021221250062808394
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.07147576023661845,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 0.22043845802545547
+            },
+            "former_ML_only": {
+              "max_error": 0.07147576023661845,
+              "classical_s": 0.15398595808073878,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.09125502031678634,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.023038625018671155
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.059483731075293124,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 0.22352220909669995
+            },
+            "former_ML_only": {
+              "max_error": 0.059483731075293124,
+              "classical_s": 0.17178595904260874,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.07833872295951821,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.021987791871652007
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.07765776229505174,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 0.2770449579693377
+            },
+            "former_ML_only": {
+              "max_error": 0.07765776229505174,
+              "classical_s": 0.5031010829843581,
+              "refused": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "N": 100,
+      "case": "noiseless",
+      "norm": 0.65,
+      "n": 2700,
+      "tau_us": 120,
+      "x_fraction": 0.1,
+      "active_time_s": 0.324,
+      "former_minimum_shots": 600,
+      "trials": [
+        {
+          "bank": 0,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.07817307861810066,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.05852312478236854
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.062304093234843164,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 1.931499624857679
+            },
+            "former_ML_only": {
+              "max_error": 0.062304093234843164,
+              "classical_s": 1.3067415419500321,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 0,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.08424471394237608,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.05061462498269975
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.0692910195374911,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 1.680451292078942
+            },
+            "former_ML_only": {
+              "max_error": 0.07302524441244908,
+              "classical_s": 1.3716799160465598,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.09193847570098673,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.034928583074361086
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.07700558766085625,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 0.9239272498525679
+            },
+            "former_ML_only": {
+              "max_error": 0.07293295336253881,
+              "classical_s": 0.7071279999800026,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.08043134224307523,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.02995179104618728
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.07429802884091564,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 1.06282545812428
+            },
+            "former_ML_only": {
+              "max_error": 0.07429802884091564,
+              "classical_s": 0.6538357092067599,
+              "refused": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "N": 100,
+      "case": "t2_1ms",
+      "norm": 0.65,
+      "n": 3510,
+      "tau_us": 120,
+      "x_fraction": 0.1,
+      "active_time_s": 0.42119999999999996,
+      "former_minimum_shots": 600,
+      "trials": [
+        {
+          "bank": 0,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.07483683973746759,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.07319675013422966
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.06731284516853772,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 2.4626040828879923
+            },
+            "former_ML_only": {
+              "max_error": 0.06731284516853772,
+              "classical_s": 1.6680138329975307,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 0,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.07860367100998542,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.061112333089113235
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.07893415436023786,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 3.183605208992958
+            },
+            "former_ML_only": {
+              "max_error": 0.07893421989361546,
+              "classical_s": 2.225752416998148,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.08834851053298465,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.07140229106880724
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.05946381109469029,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 1.958605125080794
+            },
+            "former_ML_only": {
+              "max_error": 0.05946381109469029,
+              "classical_s": 1.4217792910058051,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.08766275434491634,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.061928790993988514
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.0946705097415885,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 3.405140500050038
+            },
+            "former_ML_only": {
+              "max_error": 0.0946705097415885,
+              "classical_s": 2.5083606250118464,
+              "refused": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "N": 200,
+      "case": "noiseless",
+      "norm": 0.65,
+      "n": 2464,
+      "tau_us": 200,
+      "x_fraction": 0.1,
+      "active_time_s": 0.49279999999999996,
+      "former_minimum_shots": 1200,
+      "trials": [
+        {
+          "bank": 0,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.0820687803944745,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.11688854196108878
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.08054364458216867,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 14.600590832997113
+            },
+            "former_ML_only": {
+              "max_error": 0.08054364458216867,
+              "classical_s": 9.439206624869257,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 0,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.08123308953036258,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.06176095805130899
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.09832512176480734,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 15.239765500184149
+            },
+            "former_ML_only": {
+              "max_error": 0.0840550396014317,
+              "classical_s": 11.040853957878426,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.09218175785351994,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.1678340840153396
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.07747778179927041,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 18.512039000168443
+            },
+            "former_ML_only": {
+              "max_error": 0.07747778179927041,
+              "classical_s": 11.67449783300981,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.08967120912025553,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.0832833331078291
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.08145020508282245,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 18.58203566703014
+            },
+            "former_ML_only": {
+              "max_error": 0.08145020508282245,
+              "classical_s": 11.073584125144407,
+              "refused": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "N": 200,
+      "case": "t2_1ms",
+      "norm": 0.65,
+      "n": 3955,
+      "tau_us": 200,
+      "x_fraction": 0.1,
+      "active_time_s": 0.7909999999999999,
+      "former_minimum_shots": 1200,
+      "trials": [
+        {
+          "bank": 0,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.08011812224890519,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.17963008396327496
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.0725085505964414,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 22.455907540861517
+            },
+            "former_ML_only": {
+              "max_error": 0.0698420851875789,
+              "classical_s": 16.309977458091453,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 0,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.08000063764252534,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.13141579111106694
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.09565327070676541,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 25.756884708069265
+            },
+            "former_ML_only": {
+              "max_error": 0.09445668387055609,
+              "classical_s": 16.101919666165486,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.0828500327156595,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.13908895896747708
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.0752084031808414,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 24.69314641598612
+            },
+            "former_ML_only": {
+              "max_error": 0.07150211934220099,
+              "classical_s": 19.89273341721855,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.08550893362023924,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.1531426659785211
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.10298645442054241,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 59.481880666920915
+            },
+            "former_ML_only": {
+              "max_error": 0.09655902208723606,
+              "classical_s": 42.10728199989535,
+              "refused": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "N": 20,
+      "case": "noiseless",
+      "norm": 0.2,
+      "n": 202,
+      "tau_us": 200,
+      "x_fraction": 0.3,
+      "active_time_s": 0.0404,
+      "former_minimum_shots": 120,
+      "trials": [
+        {
+          "bank": 0,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.04357227358218118,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.0018915829714387655
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.05906865350203884,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 0.03245083405636251
+            },
+            "former_ML_only": {
+              "max_error": 0.05906865350203884,
+              "classical_s": 0.018738416954874992,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 0,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.05016470643960355,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.0010242089629173279
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.0503517885083543,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 0.027697957819327712
+            },
+            "former_ML_only": {
+              "max_error": 0.05035162725742436,
+              "classical_s": 0.016777124954387546,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.059042262309612764,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.0017412500455975533
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.045489713218080964,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 0.030496916035190225
+            },
+            "former_ML_only": {
+              "max_error": 0.045489713218080964,
+              "classical_s": 0.017175916815176606,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.0746428919107319,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.0010277919936925173
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.11537854573134494,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 0.039168833987787366
+            },
+            "former_ML_only": {
+              "max_error": 0.11537854573134494,
+              "classical_s": 0.029806707985699177,
+              "refused": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "N": 50,
+      "case": "noiseless",
+      "norm": 0.2,
+      "n": 256,
+      "tau_us": 280,
+      "x_fraction": 0.2,
+      "active_time_s": 0.07168,
+      "former_minimum_shots": 300,
+      "trials": [
+        {
+          "bank": 0,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.0815083736450457,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.004547374788671732
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.0815083736450457,
+              "ml_applied": false,
+              "skipped": "Timestamped ML requires at least 3*2N shots and 2N Y shots.",
+              "classical_s": 0.0022472920827567577
+            },
+            "former_ML_only": {
+              "max_error": null,
+              "classical_s": 0.00012858305126428604,
+              "refused": "Timestamped ML requires at least 3*2N shots and 2N Y shots."
+            }
+          }
+        },
+        {
+          "bank": 0,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.08059027137902414,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.0022141668014228344
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.08059027137902414,
+              "ml_applied": false,
+              "skipped": "Timestamped ML requires at least 3*2N shots and 2N Y shots.",
+              "classical_s": 0.0022347921039909124
+            },
+            "former_ML_only": {
+              "max_error": null,
+              "classical_s": 0.00012900005094707012,
+              "refused": "Timestamped ML requires at least 3*2N shots and 2N Y shots."
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.07002025605936504,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.005373041843995452
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.07002025605936504,
+              "ml_applied": false,
+              "skipped": "Timestamped ML requires at least 3*2N shots and 2N Y shots.",
+              "classical_s": 0.0020158749539405107
+            },
+            "former_ML_only": {
+              "max_error": null,
+              "classical_s": 0.00012579094618558884,
+              "refused": "Timestamped ML requires at least 3*2N shots and 2N Y shots."
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.0733125481924466,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.0019797079730778933
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.0733125481924466,
+              "ml_applied": false,
+              "skipped": "Timestamped ML requires at least 3*2N shots and 2N Y shots.",
+              "classical_s": 0.0019918750040233135
+            },
+            "former_ML_only": {
+              "max_error": null,
+              "classical_s": 0.0001229161862283945,
+              "refused": "Timestamped ML requires at least 3*2N shots and 2N Y shots."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "N": 100,
+      "case": "noiseless",
+      "norm": 0.2,
+      "n": 312,
+      "tau_us": 400,
+      "x_fraction": 0.1,
+      "active_time_s": 0.1248,
+      "former_minimum_shots": 600,
+      "trials": [
+        {
+          "bank": 0,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.05270484003871426,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.00967358285561204
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.05270484003871426,
+              "ml_applied": false,
+              "skipped": "Timestamped ML requires at least 3*2N shots and 2N Y shots.",
+              "classical_s": 0.004366833018139005
+            },
+            "former_ML_only": {
+              "max_error": null,
+              "classical_s": 0.0001572908367961645,
+              "refused": "Timestamped ML requires at least 3*2N shots and 2N Y shots."
+            }
+          }
+        },
+        {
+          "bank": 0,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.060158835601414176,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.004297417122870684
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.060158835601414176,
+              "ml_applied": false,
+              "skipped": "Timestamped ML requires at least 3*2N shots and 2N Y shots.",
+              "classical_s": 0.004241334041580558
+            },
+            "former_ML_only": {
+              "max_error": null,
+              "classical_s": 0.00015183305367827415,
+              "refused": "Timestamped ML requires at least 3*2N shots and 2N Y shots."
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.07497700786999145,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.010298957815393806
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.07497700786999145,
+              "ml_applied": false,
+              "skipped": "Timestamped ML requires at least 3*2N shots and 2N Y shots.",
+              "classical_s": 0.004211124964058399
+            },
+            "former_ML_only": {
+              "max_error": null,
+              "classical_s": 0.00014870893210172653,
+              "refused": "Timestamped ML requires at least 3*2N shots and 2N Y shots."
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.060645120907070874,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.004191709216684103
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.060645120907070874,
+              "ml_applied": false,
+              "skipped": "Timestamped ML requires at least 3*2N shots and 2N Y shots.",
+              "classical_s": 0.0043062500189989805
+            },
+            "former_ML_only": {
+              "max_error": null,
+              "classical_s": 0.00014841603115200996,
+              "refused": "Timestamped ML requires at least 3*2N shots and 2N Y shots."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "N": 200,
+      "case": "noiseless",
+      "norm": 0.2,
+      "n": 296,
+      "tau_us": 600,
+      "x_fraction": 0.2,
+      "active_time_s": 0.17759999999999998,
+      "former_minimum_shots": 1200,
+      "trials": [
+        {
+          "bank": 0,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.08659389215498063,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.03551866696216166
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.08659389215498063,
+              "ml_applied": false,
+              "skipped": "Timestamped ML requires at least 3*2N shots and 2N Y shots.",
+              "classical_s": 0.006463957950472832
+            },
+            "former_ML_only": {
+              "max_error": null,
+              "classical_s": 0.00012974999845027924,
+              "refused": "Timestamped ML requires at least 3*2N shots and 2N Y shots."
+            }
+          }
+        },
+        {
+          "bank": 0,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.07523629088075263,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.005663583986461163
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.07523629088075263,
+              "ml_applied": false,
+              "skipped": "Timestamped ML requires at least 3*2N shots and 2N Y shots.",
+              "classical_s": 0.005437708925455809
+            },
+            "former_ML_only": {
+              "max_error": null,
+              "classical_s": 0.00012229196727275848,
+              "refused": "Timestamped ML requires at least 3*2N shots and 2N Y shots."
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.07430971391498,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.03773245820775628
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.07430971391498,
+              "ml_applied": false,
+              "skipped": "Timestamped ML requires at least 3*2N shots and 2N Y shots.",
+              "classical_s": 0.006949832895770669
+            },
+            "former_ML_only": {
+              "max_error": null,
+              "classical_s": 0.00014762510545551777,
+              "refused": "Timestamped ML requires at least 3*2N shots and 2N Y shots."
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.09183098003845987,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.0070387080777436495
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.09183098003845987,
+              "ml_applied": false,
+              "skipped": "Timestamped ML requires at least 3*2N shots and 2N Y shots.",
+              "classical_s": 0.00940766604617238
+            },
+            "former_ML_only": {
+              "max_error": null,
+              "classical_s": 0.00014350004494190216,
+              "refused": "Timestamped ML requires at least 3*2N shots and 2N Y shots."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "N": 300,
+      "case": "noiseless",
+      "norm": 0.2,
+      "n": 324,
+      "tau_us": 720,
+      "x_fraction": 0.1,
+      "active_time_s": 0.23328,
+      "former_minimum_shots": 1800,
+      "trials": [
+        {
+          "bank": 0,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.06469326323215974,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.1290967920795083
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.06469326323215974,
+              "ml_applied": false,
+              "skipped": "Timestamped ML requires at least 3*2N shots and 2N Y shots.",
+              "classical_s": 0.01311029214411974
+            },
+            "former_ML_only": {
+              "max_error": null,
+              "classical_s": 0.00019158399663865566,
+              "refused": "Timestamped ML requires at least 3*2N shots and 2N Y shots."
+            }
+          }
+        },
+        {
+          "bank": 0,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.06904831671644254,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.01401975005865097
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.06904831671644254,
+              "ml_applied": false,
+              "skipped": "Timestamped ML requires at least 3*2N shots and 2N Y shots.",
+              "classical_s": 0.012802709126845002
+            },
+            "former_ML_only": {
+              "max_error": null,
+              "classical_s": 0.0001865830272436142,
+              "refused": "Timestamped ML requires at least 3*2N shots and 2N Y shots."
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.08751512152998954,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.15920470794662833
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.08751512152998954,
+              "ml_applied": false,
+              "skipped": "Timestamped ML requires at least 3*2N shots and 2N Y shots.",
+              "classical_s": 0.016287208069115877
+            },
+            "former_ML_only": {
+              "max_error": null,
+              "classical_s": 0.00022912491112947464,
+              "refused": "Timestamped ML requires at least 3*2N shots and 2N Y shots."
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.07607183328886638,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.017402624944224954
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.07607183328886638,
+              "ml_applied": false,
+              "skipped": "Timestamped ML requires at least 3*2N shots and 2N Y shots.",
+              "classical_s": 0.015655166935175657
+            },
+            "former_ML_only": {
+              "max_error": null,
+              "classical_s": 0.0002196670975536108,
+              "refused": "Timestamped ML requires at least 3*2N shots and 2N Y shots."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "N": 300,
+      "case": "noiseless",
+      "norm": 0.65,
+      "n": 2502,
+      "tau_us": 280,
+      "x_fraction": 0.1,
+      "active_time_s": 0.70056,
+      "former_minimum_shots": 1800,
+      "trials": [
+        {
+          "bank": 0,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.07306544026292194,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.20318591687828302
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.08663136657106929,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 66.46250008302741
+            },
+            "former_ML_only": {
+              "max_error": 0.07491649000000485,
+              "classical_s": 46.91921095899306,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 0,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.08815132030775957,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.08626950019970536
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.08406366459406556,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 56.89393229200505
+            },
+            "former_ML_only": {
+              "max_error": 0.06906038794425218,
+              "classical_s": 41.32117074984126,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.07070655778871493,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.18610875005833805
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.06764747543134478,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 65.79332654108293
+            },
+            "former_ML_only": {
+              "max_error": 0.06764747543134478,
+              "classical_s": 35.370794458081946,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.08049182333802049,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.11956104193814099
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.09642487317931792,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 74.07101312512532
+            },
+            "former_ML_only": {
+              "max_error": 0.09642487317931792,
+              "classical_s": 40.77544862497598,
+              "refused": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "N": 300,
+      "case": "t2_1ms",
+      "norm": 0.65,
+      "n": 6421,
+      "tau_us": 160,
+      "x_fraction": 0.1,
+      "active_time_s": 1.02736,
+      "former_minimum_shots": 1800,
+      "trials": [
+        {
+          "bank": 0,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.09545802460118202,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.3458694580476731
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.07335424250233603,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 63.118104125140235
+            },
+            "former_ML_only": {
+              "max_error": 0.07335424250233603,
+              "classical_s": 50.54781458317302,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 0,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.08236578717949962,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.41762808384373784
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.08290926956100698,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 73.07744741602801
+            },
+            "former_ML_only": {
+              "max_error": 0.08290926956100698,
+              "classical_s": 56.41673629102297,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "dense",
+          "results": {
+            "RQS": {
+              "max_error": 0.0844862584128709,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.32749704201705754
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.0787301661371044,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 63.23697516694665
+            },
+            "former_ML_only": {
+              "max_error": 0.0787301661371044,
+              "classical_s": 46.505618708906695,
+              "refused": null
+            }
+          }
+        },
+        {
+          "bank": 1,
+          "signal": "one_tone",
+          "results": {
+            "RQS": {
+              "max_error": 0.07755044078737987,
+              "ml_applied": false,
+              "skipped": null,
+              "classical_s": 0.24395991722121835
+            },
+            "TIMESTAMPED-ML": {
+              "max_error": 0.06736901443385496,
+              "ml_applied": true,
+              "skipped": null,
+              "classical_s": 60.12294250004925
+            },
+            "former_ML_only": {
+              "max_error": 0.06736901443385496,
+              "classical_s": 50.37073720805347,
+              "refused": null
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

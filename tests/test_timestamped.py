@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 
 import randomized_sensing as R
-from randomized_sensing._timestamped import objective
+from randomized_sensing._timestamped import objective, fit as legacy_fit
 
 
 @pytest.fixture(scope="module")
@@ -62,25 +62,73 @@ def test_actual_timestamps_control_inference_and_posthoc_queries(pool):
     a = np.array([.12, -.08, .1, .15])
     counts = R.simulate(plan, a, start_times_s=starts, seed=42)
     identity = plan.plan_id
-    result = R.decode(plan, counts)
+    result = R.decode(plan, counts, method="TIMESTAMPED-ML")
     assert result.method == "TIMESTAMPED-ML" and result.fit_converged
-    assert result.guard_floor is None and result.values == ()
+    assert result.guard_floor is not None and result.values == ()
     assert np.max(abs(np.array(result.amplitudes)-a)) < .04
     assert abs(result.fitted_contrast-pool.experiment.contrast(pool.duration_s)) < .04
     wrong = R.TimedCounts(counts.positive_counts, {r["row_id"]: r["start_time_s"] for r in plan.rows})
-    assert np.max(abs(np.array(R.decode(plan, wrong).amplitudes)-a)) > .1
+    assert np.max(abs(np.array(R.decode(plan, wrong, method="TIMESTAMPED-ML").amplitudes)-a)) > .1
     queries = dict(cosine_weights=((1., .2), (.1, -.3)), sine_weights=((.2, -.3), (.4, .1)))
-    queried = R.decode(plan, counts, **queries)
+    queried = R.decode(plan, counts, method="TIMESTAMPED-ML", **queries)
     assert queried.amplitudes == result.amplitudes
     assert queried.values == R.evaluate_observables(result.amplitudes, **queries)
     assert plan.plan_id == identity
     # Exact outcome probabilities, not a true-amplitude initialization in the decoder.
-    population = R.population_estimate(plan, a, start_times_s=counts.start_times_s, **queries)
+    population = R.population_estimate(plan, a, start_times_s=counts.start_times_s,
+                                      method="TIMESTAMPED-ML", **queries)
     np.testing.assert_allclose(population.amplitudes, a, atol=2e-5)
     with pytest.raises(ValueError, match="TIMESTAMPED-ML"):
-        R.decode(plan, counts, method="RQS")
+        R.decode(plan, counts, method="RQS-ML")
     with pytest.raises(ValueError, match="actual start"):
         R.decode(plan, counts.positive_counts)
+
+
+@pytest.mark.parametrize("t2_s", [None, 200e-6])
+def test_both_decoders_recover_independent_physical_pulse_data(pool, t2_s):
+    # Generate physical outcomes without the simulator, stored response table,
+    # response rotation helper, or the decoder's outcome_sign metadata.
+    e = replace(pool.experiment, t2_s=t2_s)
+    p = R.Pool(e, pool.duration_s, pool.start_time_s, pool.design_clock_s,
+               pool.sequences, pool.Z.copy(), dict(pool.settings))
+    plan = R.plan_acquisition(p, n_shots=8000, x_fraction=.25,
+                              field_mode="free_running", shot_period_s=10.037e-6)
+    starts = np.array([r["start_time_s"] for r in plan.rows])+127e-9
+    starts += np.random.default_rng(31).uniform(0, 10e-9, len(starts))
+    truth = np.array([.12, -.08, .1, .15])
+    f = np.asarray(e.frequencies_hz, np.longdouble)
+    pi = np.arccos(np.longdouble(-1))
+    raw, parities = [], set()
+    for row, start in zip(plan.rows, starts):
+        switches = p.sequence(row["sequence_index"]).switch_times_s
+        edges = np.array([0., *switches, p.duration_s], np.longdouble)
+        widths = np.diff(edges)[:, None]
+        midpoints = np.longdouble(start)+(edges[:-1]+edges[1:])[:, None]/2
+        # Physical controls always begin at +1, including negative virtual entries.
+        modulation = (-1.)**np.arange(len(edges)-1)
+        integral = modulation@(widths*np.sinc(widths*f)*np.exp(2j*pi*midpoints*f))
+        phase = float(2*pi*e.coupling_hz*(integral.real@truth[:p.N]+integral.imag@truth[p.N:]))
+        parity = (-1)**len(switches)
+        parities.add(parity)
+        response = parity*np.sin(phase) if row["basis"] == "Y" else np.cos(phase)
+        raw.append(e.readout_bias+e.visibility*np.exp(-p.duration_s/t2_s if t2_s else 0)*response)
+    assert parities == {-1, 1}
+    assert {r["sequence_index"] < len(p.sequences) for r in plan.rows} == {False, True}
+    outcomes = R.TimedOutcomes(raw, starts)
+    moment = R.decode(plan, outcomes)
+    refined = R.decode(plan, outcomes, method="TIMESTAMPED-ML")
+    assert np.max(abs(np.array(moment.amplitudes)-truth)) < .015
+    assert refined.ml_applied and refined.fit_converged
+    np.testing.assert_allclose(refined.amplitudes, truth, atol=2e-5, rtol=0)
+    assert refined.fitted_contrast == pytest.approx(e.contrast(p.duration_s), abs=2e-5)
+    # The fourth start must retain the likelihood quality of the legacy three.
+    positive = {r["row_id"]: (1+v)/2 for r, v in zip(plan.rows, raw)}
+    legacy, contrast, _, _ = legacy_fit(p, plan.rows, positive, starts)
+    z = p.responses_at(np.array([r["sequence_index"] for r in plan.rows]), starts)
+    evaluate = objective(z, np.array([r["basis"] == "Y" for r in plan.rows]),
+                         np.array([r["outcome_sign"] for r in plan.rows]),
+                         np.ones(len(plan.rows)), np.array([(1+v)/2 for v in raw]), e.readout_bias)
+    assert evaluate(np.r_[refined.amplitudes, refined.fitted_contrast])[0] <= evaluate(np.r_[legacy, contrast])[0]+1e-10
 
 
 def test_timestamped_csv_roundtrip_and_missing_or_invalid_timestamps(pool, tmp_path):
@@ -127,7 +175,7 @@ def test_binomial_likelihood_gradient_includes_physical_parity_and_bias(pool):
     np.testing.assert_allclose(gradient, finite, rtol=1e-6, atol=1e-9)
 
 
-def test_degenerate_timestamped_design_is_rejected():
+def test_degenerate_timestamped_design_returns_moments_without_refinement():
     pool = R.build_pool(R.Experiment((1e6, 2e6), 100e3, clock_s=2.5e-9),
                         duration_s=1e-6, pool_size=32, seed=4)
     plan = R.plan_acquisition(pool, n_shots=64, field_mode="free_running", start_times_s=np.arange(64)*2e-6)
@@ -135,5 +183,8 @@ def test_degenerate_timestamped_design_is_rejected():
     rows = tuple(dict(r, sequence_index=0, outcome_sign=q.initial_sign*(-1)**len(q.switch_times_s) if r["basis"] == "Y" else 1) for r in plan.rows)
     plan = replace(plan, rows=rows)
     counts = R.simulate(plan, np.zeros(4), seed=1)
-    with pytest.raises(ValueError, match="span all"):
-        R.decode(plan, counts)
+    result = R.decode(plan, counts, method="TIMESTAMPED-ML")
+    moment = R.decode(plan, counts)
+    assert not result.ml_applied and result.fit_converged is None
+    assert "span all" in result.refinement_skipped_reason
+    assert result.amplitudes == moment.amplitudes

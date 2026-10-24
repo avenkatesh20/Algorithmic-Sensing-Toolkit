@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- Free-running RQS now back-rotates bank-frame whitened responses and shares
+  the phase-locked contrast guard and per-tone correction. It is the default
+  and requires only one X and one Y shot. TIMESTAMPED-ML adds the moment estimate
+  as a fourth start and returns moments, with an explicit reason, when its 6N
+  or Y-rank requirements fail. Population diagnostics support both methods.
+  Timestamped continuous raw values use `TimedOutcomes`; CSV formats and saved
+  plan IDs are unchanged. Phase-locked estimator results are unchanged.
+- Long commensurate waveforms use their natural multisine period for FFT
+  synthesis and exact folded-cell integration after full timing repair.
+  This retains independent phases and actual pulse timing constraints.
 - Randomized pools use FFT synthesis and exact FFT cell integration for
   compatible tones, with bounded-memory dense synthesis and exact cell-table
   integration for arbitrary frequencies. Random phases remain independent;

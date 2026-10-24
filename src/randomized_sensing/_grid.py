@@ -17,7 +17,9 @@ def fft_grid(frequencies, duration, length):
         tolerance = 32*np.finfo(float).eps*np.maximum(1., abs(cycles))
         if (np.all(abs(cycles-bins) <= tolerance) and np.all(bins > 0)
                 and np.all(2*bins < factor*length) and len(np.unique(bins)) == len(bins)):
-            return bins, factor*length
+            n = factor*length
+            divisor = int(np.gcd.reduce(np.r_[n, bins]))
+            return bins//divisor, n//divisor
     return None
 
 
@@ -38,7 +40,7 @@ class CellGrid:
 
     @property
     def batch_size(self):
-        width = 2*self.fft[1] if self.fft is not None else self.length
+        width = max(2*self.fft[1], 2*self.length) if self.fft is not None else self.length
         return max(1, min(256, _BLOCK_ELEMENTS//max(width, len(self.f))))
 
     def _tables(self, begin, end):
@@ -61,7 +63,10 @@ class CellGrid:
             bins, n = self.fft
             spectrum = np.zeros((len(theta), n//2+1), complex)
             spectrum[:, bins] = np.exp(1j*theta)*self.phase
-            return irfft(spectrum, n=n, axis=1)[:, :self.length]*(n/2)
+            values = irfft(spectrum, n=n, axis=1)*(n/2)
+            if n < self.length:
+                values = np.tile(values, (1, (self.length+n-1)//n))
+            return values[:, :self.length]
         c, s = np.cos(theta), np.sin(theta)
         values = np.empty((len(theta), self.length))
         for begin, end, (ct, st) in self._blocks():
@@ -72,7 +77,14 @@ class CellGrid:
         """Integrate the signed, repaired +/-1 cells; no quadrature approximation."""
         if self.fft is not None:
             bins, n = self.fft
-            z = np.conj(rfft(patterns.astype(float), n=n, axis=1)[:, bins])
+            if n < self.length:
+                full, remainder = divmod(self.length, n)
+                signed = patterns[:, :full*n].reshape(len(patterns), full, n).sum(axis=1, dtype=float)
+                if remainder:
+                    signed[:, :remainder] += patterns[:, full*n:]
+            else:
+                signed = patterns.astype(float)
+            z = np.conj(rfft(signed, n=n, axis=1)[:, bins])
             z *= self.phase*self.cell
             return np.c_[z.real, z.imag]
         values = np.zeros((len(patterns), 2*len(self.f)))

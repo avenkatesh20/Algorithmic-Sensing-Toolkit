@@ -51,6 +51,12 @@ with set_workers(4):
     pool = R.build_pool(experiment, duration_s=40e-6, seed=4)
 ```
 
+For long commensurate shots, common tone-bin factors reduce the transform to
+the multisine's natural period. The full waveform still undergoes timing repair;
+its repaired cells are folded into that period for exact response integration,
+including boundary changes and partial final periods. Every pool entry retains
+its independently sampled phases and complete physical pulse sequence.
+
 The default respects SciPy's worker setting (normally one). Each waveform has
 independent random phases; there is no cyclic-shift augmentation. Closed-form
 interval integration remains the independent verifier in `audit` and bundle
@@ -212,23 +218,59 @@ both dictionaries use acquisition row IDs. `simulate` can accept an alternative
 `write_counts` preserves those measured times. Saved phase-locked bundles keep
 their existing count format and identities.
 
-`decode(plan, counts)` selects `TIMESTAMPED-ML` for freely running data. It uses
-the actual responses and calibrated offset in a binary likelihood, jointly
-fitting amplitudes and contrast within the amplitude norm bound. Three
-deterministic starting points come only from the data and calibrations. It
-requires at least `3*2N` total shots and a full-rank Y-response design; failures
-of these checks or fit convergence are reported as errors.
+`decode(plan, counts)` selects **RQS** for freely running data. For each Y
+shot, it computes `u = Sigma^-1 @ z` in the pool reference frame, then rotates
+`u` to the actual starting time. The order is important: covariance whitening
+and the per-tone rotation do not generally commute. Corrected Y outcomes weight
+these rotated vectors. Their mean is divided by the bias-corrected X mean,
+using the same guard floor and per-tone Bessel-map correction as phase-locked
+RQS. Contrast cancels in the unguarded ratio.
 
-The fixed-pool Gaussian/moment identity is not assumed for this reconstruction.
-`RQS` and `RQS-ML` remain the phase-locked estimators; requesting them on freely
-running data raises an error. This bounded local likelihood fit does not certify
-a global optimum, uniqueness, precision, or confidence interval.
+The moment estimate needs only one X and one Y shot, including when the total
+is below `6*N` or the measured Y design is rank deficient. This does not promise
+accuracy with very few shots. Finite pools, timing repair, covariance anisotropy,
+and departures from the random-phase model can leave bias; phase rotations do
+not remove those approximations. `pool.rotate_vectors(vectors, times)` exposes
+the same long-double/remainder rotation for arbitrary `(...,2N)` vectors.
+Bank-frame solves are cached up to 128 MB; larger banks use bounded batches.
 
-For validation, `population_estimate(plan, amplitudes, start_times_s=...)` passes
-exact per-shot outcome probabilities through the same fit. This removes shot
-noise and checks numerical inversion for that field and schedule. The decoder
-receives those probabilities, not the true amplitudes. The notebook also supports
-repeated noisy trials using the same actual timestamp table.
+`method="TIMESTAMPED-ML"` requests the moment estimate followed by the existing
+constrained amplitude/contrast likelihood fit. The moment result supplies a
+fourth starting point, in addition to the three data/calibration starts. A full
+fit still needs at least `3*2N` total shots and a full-rank Y-response design.
+If these prerequisites fail, the result contains the RQS amplitudes with
+`ml_applied=False`, `fit_converged=None`, and `refinement_skipped_reason`.
+Missing/invalid timestamps and actual likelihood convergence failures still
+raise errors. `RQS-ML` remains the phase-locked refinement name.
+
+```python
+result = R.decode(plan, measured)  # free-running RQS, with no 6N floor
+refined = R.decode(plan, measured, method="TIMESTAMPED-ML")
+print(refined.ml_applied, refined.refinement_skipped_reason)
+```
+
+Binary count files are unchanged. For normalized continuous readout, pass
+`TimedOutcomes(raw_values, actual_start_times)` to `decode`: one raw value in
+`[-1,1]` and one actual timestamp per acquisition row. Each value must describe
+its recorded starting phase. It cannot average shots with different phases.
+The moment accumulators accept these values directly; optional refinement uses
+fractional Bernoulli sufficient statistics, without certifying an analog noise
+model or a confidence interval.
+
+`population_estimate(plan, amplitudes, start_times_s=...)` now feeds exact
+per-shot expected outcomes into free-running RQS by default. It removes binary
+outcome noise while retaining the finite waveform/schedule draw variation.
+Use `method="TIMESTAMPED-ML"` for the optional noise-free likelihood check;
+its same eligibility/fallback rules apply. The true amplitudes generate the
+synthetic data but are not passed to either reconstruction method.
+
+The [scaling benchmark](../benchmarks/free_running_scaling.py) separates
+calibration signals from held-out evaluation on fresh banks, compares the
+phase-locked and free-running moment estimates, and optionally evaluates the
+former ML-only shot restriction and the new refinement. It reports evaluated
+and extrapolated T95 budgets separately, nonconvergence, trial counts, and
+fitted slopes. A sqrt(N) law is a regime-dependent expectation to test, not a
+software guarantee. Weak signals can reveal the old shot floor more clearly.
 
 ## Phase-locked postprocessing
 

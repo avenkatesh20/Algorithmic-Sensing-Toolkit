@@ -1,0 +1,1495 @@
+{
+  "config": {
+    "calibration_trials": 128,
+    "evaluation_trials": 400,
+    "ml_trials": 0,
+    "banks": 2,
+    "workers": 2,
+    "max_rounds": 5,
+    "max_neighbors": 4,
+    "epsilon": 0.1
+  },
+  "rows": [
+    {
+      "case": "noiseless",
+      "norm": 0.2,
+      "N": 20,
+      "calibration": {
+        "tau_us": 200,
+        "x_fraction": 0.3,
+        "free": {
+          "n": 202,
+          "t95_s": 0.0404,
+          "converged": false,
+          "next_n": 248,
+          "history": [
+            {
+              "n": 182,
+              "q95": 0.11072558685466155,
+              "success": 0.890625,
+              "ml_applied": 0,
+              "failures": []
+            },
+            {
+              "n": 224,
+              "q95": 0.09549384177934447,
+              "success": 0.9609375,
+              "ml_applied": 0,
+              "failures": []
+            },
+            {
+              "n": 205,
+              "q95": 0.10841520317794774,
+              "success": 0.8984375,
+              "ml_applied": 0,
+              "failures": []
+            },
+            {
+              "n": 241,
+              "q95": 0.09146495696795084,
+              "success": 0.9765625,
+              "ml_applied": 0,
+              "failures": []
+            },
+            {
+              "n": 202,
+              "q95": 0.11058289665966546,
+              "success": 0.90625,
+              "ml_applied": 0,
+              "failures": []
+            }
+          ]
+        },
+        "locked": {
+          "n": 225,
+          "t95_s": 0.045,
+          "converged": true,
+          "history": [
+            {
+              "n": 202,
+              "q95": 0.10541753555827629,
+              "success": 0.921875,
+              "ml_applied": 0,
+              "failures": []
+            },
+            {
+              "n": 225,
+              "q95": 0.09793239848240166,
+              "success": 0.9609375,
+              "ml_applied": 0,
+              "failures": []
+            }
+          ]
+        },
+        "ml_only": null,
+        "duration_candidates": {
+          "200": {
+            "n": 182,
+            "t95_s": 0.036399999999999995,
+            "converged": true,
+            "history": [
+              {
+                "n": 256,
+                "q95": 0.08420456993182357,
+                "success": 0.9921875,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 182,
+                "q95": 0.10191848947451279,
+                "success": 0.9296875,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          },
+          "160": {
+            "n": 236,
+            "t95_s": 0.037759999999999995,
+            "converged": true,
+            "history": [
+              {
+                "n": 256,
+                "q95": 0.09450847835056576,
+                "success": 0.9609375,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 229,
+                "q95": 0.10942509567760966,
+                "success": 0.890625,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 275,
+                "q95": 0.0957294000401246,
+                "success": 0.9609375,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 253,
+                "q95": 0.09655495287330515,
+                "success": 0.9609375,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 236,
+                "q95": 0.10206867685933435,
+                "success": 0.9140625,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          },
+          "240": {
+            "n": 179,
+            "t95_s": 0.04296,
+            "converged": true,
+            "history": [
+              {
+                "n": 256,
+                "q95": 0.07939858916375934,
+                "success": 0.9921875,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 162,
+                "q95": 0.111088062701397,
+                "success": 0.8828125,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 200,
+                "q95": 0.10329549027292646,
+                "success": 0.9375,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 214,
+                "q95": 0.09132124943417695,
+                "success": 0.984375,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 179,
+                "q95": 0.09799996881738832,
+                "success": 0.953125,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          }
+        },
+        "fraction_candidates": {
+          "0.1": {
+            "n": 221,
+            "t95_s": 0.044199999999999996,
+            "converged": false,
+            "next_n": 209,
+            "history": [
+              {
+                "n": 182,
+                "q95": 0.12107256623582903,
+                "success": 0.859375,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 267,
+                "q95": 0.09045148551129024,
+                "success": 0.9921875,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 219,
+                "q95": 0.09636490736161744,
+                "success": 0.9609375,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 204,
+                "q95": 0.10397513225709946,
+                "success": 0.9140625,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 221,
+                "q95": 0.09722007075911619,
+                "success": 0.9609375,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          },
+          "0.2": {
+            "n": 238,
+            "t95_s": 0.047599999999999996,
+            "converged": true,
+            "history": [
+              {
+                "n": 182,
+                "q95": 0.1135234309123763,
+                "success": 0.890625,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 235,
+                "q95": 0.08701979120191944,
+                "success": 0.9921875,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 178,
+                "q95": 0.10573168448513014,
+                "success": 0.890625,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 199,
+                "q95": 0.10935544057512646,
+                "success": 0.8984375,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 238,
+                "q95": 0.09938023320863089,
+                "success": 0.9453125,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          },
+          "0.3": {
+            "n": 202,
+            "t95_s": 0.0404,
+            "converged": false,
+            "next_n": 248,
+            "history": [
+              {
+                "n": 182,
+                "q95": 0.11072558685466155,
+                "success": 0.890625,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 224,
+                "q95": 0.09549384177934447,
+                "success": 0.9609375,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 205,
+                "q95": 0.10841520317794774,
+                "success": 0.8984375,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 241,
+                "q95": 0.09146495696795084,
+                "success": 0.9765625,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 202,
+                "q95": 0.11058289665966546,
+                "success": 0.90625,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          }
+        }
+      },
+      "evaluation": {
+        "phase_locked_RQS": {
+          "n": 207,
+          "tau_us": 200,
+          "x_fraction": 0.3,
+          "trials": 400,
+          "q95": 0.10204269364106842,
+          "median": 0.07322022228480998,
+          "success": 0.9325,
+          "active_time_s": 0.0414,
+          "estimated_t95_s": 0.043199999999999995,
+          "estimated_n": 216,
+          "budget_agreement": 0.043478260869565216,
+          "floor_bound": false,
+          "converged": true,
+          "ml_applied": 0,
+          "failures": [],
+          "history": [
+            {
+              "n": 225,
+              "q95": 0.09590551177611727,
+              "success": 0.9625
+            },
+            {
+              "n": 207,
+              "q95": 0.10204269364106842,
+              "success": 0.9325
+            }
+          ]
+        },
+        "free_running_RQS": {
+          "n": 202,
+          "tau_us": 200,
+          "x_fraction": 0.3,
+          "trials": 400,
+          "q95": 0.10107360526135238,
+          "median": 0.07342007038705574,
+          "success": 0.935,
+          "active_time_s": 0.0404,
+          "estimated_t95_s": 0.0414,
+          "estimated_n": 207,
+          "budget_agreement": 0.024752475247524754,
+          "floor_bound": false,
+          "converged": true,
+          "ml_applied": 0,
+          "failures": [],
+          "history": [
+            {
+              "n": 202,
+              "q95": 0.10107360526135238,
+              "success": 0.935
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "noiseless",
+      "norm": 0.2,
+      "N": 50,
+      "calibration": {
+        "tau_us": 280,
+        "x_fraction": 0.2,
+        "free": {
+          "n": 256,
+          "t95_s": 0.07168,
+          "converged": true,
+          "history": [
+            {
+              "n": 256,
+              "q95": 0.100680642440189,
+              "success": 0.9453125,
+              "ml_applied": 0,
+              "failures": []
+            }
+          ]
+        },
+        "locked": {
+          "n": 256,
+          "t95_s": 0.07168,
+          "converged": true,
+          "history": [
+            {
+              "n": 256,
+              "q95": 0.09928226917583438,
+              "success": 0.953125,
+              "ml_applied": 0,
+              "failures": []
+            }
+          ]
+        },
+        "ml_only": null,
+        "duration_candidates": {
+          "320": {
+            "n": 236,
+            "t95_s": 0.07551999999999999,
+            "converged": true,
+            "history": [
+              {
+                "n": 256,
+                "q95": 0.0958862020009048,
+                "success": 0.96875,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 236,
+                "q95": 0.1010295058464635,
+                "success": 0.9453125,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          },
+          "280": {
+            "n": 256,
+            "t95_s": 0.07168,
+            "converged": true,
+            "history": [
+              {
+                "n": 256,
+                "q95": 0.09876152583424454,
+                "success": 0.9609375,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          },
+          "360": {
+            "n": 223,
+            "t95_s": 0.08027999999999999,
+            "converged": true,
+            "history": [
+              {
+                "n": 256,
+                "q95": 0.09319083496872241,
+                "success": 0.9609375,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 223,
+                "q95": 0.10066129225549524,
+                "success": 0.9375,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          },
+          "240": {
+            "n": 335,
+            "t95_s": 0.0804,
+            "converged": true,
+            "history": [
+              {
+                "n": 256,
+                "q95": 0.10758475121834027,
+                "success": 0.890625,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 297,
+                "q95": 0.10606157004507201,
+                "success": 0.9375,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 335,
+                "q95": 0.09768668712647104,
+                "success": 0.9765625,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          }
+        },
+        "fraction_candidates": {
+          "0.1": {
+            "n": 265,
+            "t95_s": 0.07419999999999999,
+            "converged": true,
+            "history": [
+              {
+                "n": 256,
+                "q95": 0.10619301375155411,
+                "success": 0.9296875,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 289,
+                "q95": 0.09564939148510146,
+                "success": 0.984375,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 265,
+                "q95": 0.0981335558978673,
+                "success": 0.953125,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          },
+          "0.2": {
+            "n": 256,
+            "t95_s": 0.07168,
+            "converged": true,
+            "history": [
+              {
+                "n": 256,
+                "q95": 0.100680642440189,
+                "success": 0.9453125,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          },
+          "0.3": {
+            "n": 280,
+            "t95_s": 0.0784,
+            "converged": true,
+            "history": [
+              {
+                "n": 256,
+                "q95": 0.10440167529308043,
+                "success": 0.9140625,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 280,
+                "q95": 0.09792242489895504,
+                "success": 0.96875,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          }
+        }
+      },
+      "evaluation": {
+        "phase_locked_RQS": {
+          "n": 261,
+          "tau_us": 280,
+          "x_fraction": 0.2,
+          "trials": 400,
+          "q95": 0.097563047603685,
+          "median": 0.07514785264066329,
+          "success": 0.96,
+          "active_time_s": 0.07307999999999999,
+          "estimated_t95_s": 0.06971999999999999,
+          "estimated_n": 249,
+          "budget_agreement": 0.04597701149425287,
+          "floor_bound": false,
+          "converged": true,
+          "ml_applied": 0,
+          "failures": [],
+          "history": [
+            {
+              "n": 256,
+              "q95": 0.1043092257282445,
+              "success": 0.92
+            },
+            {
+              "n": 279,
+              "q95": 0.09664640161292036,
+              "success": 0.9675
+            },
+            {
+              "n": 261,
+              "q95": 0.097563047603685,
+              "success": 0.96
+            }
+          ]
+        },
+        "free_running_RQS": {
+          "n": 256,
+          "tau_us": 280,
+          "x_fraction": 0.2,
+          "trials": 400,
+          "q95": 0.09947291967435991,
+          "median": 0.07749561284431274,
+          "success": 0.9525,
+          "active_time_s": 0.07168,
+          "estimated_t95_s": 0.07111999999999999,
+          "estimated_n": 254,
+          "budget_agreement": 0.0078125,
+          "floor_bound": false,
+          "converged": true,
+          "ml_applied": 0,
+          "failures": [],
+          "history": [
+            {
+              "n": 256,
+              "q95": 0.09947291967435991,
+              "success": 0.9525
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "noiseless",
+      "norm": 0.2,
+      "N": 100,
+      "calibration": {
+        "tau_us": 400,
+        "x_fraction": 0.1,
+        "free": {
+          "n": 267,
+          "t95_s": 0.10679999999999999,
+          "converged": true,
+          "history": [
+            {
+              "n": 269,
+              "q95": 0.10636747735600798,
+              "success": 0.921875,
+              "ml_applied": 0,
+              "failures": []
+            },
+            {
+              "n": 305,
+              "q95": 0.09344653773613583,
+              "success": 0.9609375,
+              "ml_applied": 0,
+              "failures": []
+            },
+            {
+              "n": 267,
+              "q95": 0.1009450630825724,
+              "success": 0.9296875,
+              "ml_applied": 0,
+              "failures": []
+            }
+          ]
+        },
+        "locked": {
+          "n": 284,
+          "t95_s": 0.11359999999999999,
+          "converged": true,
+          "history": [
+            {
+              "n": 267,
+              "q95": 0.10310194641140182,
+              "success": 0.90625,
+              "ml_applied": 0,
+              "failures": []
+            },
+            {
+              "n": 284,
+              "q95": 0.10139401594211593,
+              "success": 0.9453125,
+              "ml_applied": 0,
+              "failures": []
+            }
+          ]
+        },
+        "ml_only": null,
+        "duration_candidates": {
+          "440": {
+            "n": 274,
+            "t95_s": 0.12055999999999999,
+            "converged": true,
+            "history": [
+              {
+                "n": 256,
+                "q95": 0.10330192061549466,
+                "success": 0.9140625,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 274,
+                "q95": 0.10011846374724064,
+                "success": 0.9453125,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          },
+          "400": {
+            "n": 269,
+            "t95_s": 0.10759999999999999,
+            "converged": true,
+            "history": [
+              {
+                "n": 256,
+                "q95": 0.11376213702494202,
+                "success": 0.8671875,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 332,
+                "q95": 0.0970801520955623,
+                "success": 0.96875,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 313,
+                "q95": 0.09270063291025805,
+                "success": 0.984375,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 269,
+                "q95": 0.09997596973028929,
+                "success": 0.9453125,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          },
+          "480": {
+            "n": 256,
+            "t95_s": 0.12287999999999999,
+            "converged": true,
+            "history": [
+              {
+                "n": 256,
+                "q95": 0.10310040326471132,
+                "success": 0.9296875,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 273,
+                "q95": 0.09673586613057236,
+                "success": 0.9609375,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 256,
+                "q95": 0.0998680776193108,
+                "success": 0.953125,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          },
+          "360": {
+            "n": 357,
+            "t95_s": 0.12852,
+            "converged": true,
+            "history": [
+              {
+                "n": 256,
+                "q95": 0.11315973356862995,
+                "success": 0.734375,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 328,
+                "q95": 0.10426092039024905,
+                "success": 0.9296875,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 357,
+                "q95": 0.10004570845065333,
+                "success": 0.9453125,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          }
+        },
+        "fraction_candidates": {
+          "0.1": {
+            "n": 267,
+            "t95_s": 0.10679999999999999,
+            "converged": true,
+            "history": [
+              {
+                "n": 269,
+                "q95": 0.10636747735600798,
+                "success": 0.921875,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 305,
+                "q95": 0.09344653773613583,
+                "success": 0.9609375,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 267,
+                "q95": 0.1009450630825724,
+                "success": 0.9296875,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          },
+          "0.2": {
+            "n": 311,
+            "t95_s": 0.12439999999999998,
+            "converged": true,
+            "history": [
+              {
+                "n": 269,
+                "q95": 0.10636427383046956,
+                "success": 0.921875,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 305,
+                "q95": 0.0952662854249178,
+                "success": 0.96875,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 277,
+                "q95": 0.10591980743360292,
+                "success": 0.8984375,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 311,
+                "q95": 0.1016002539836971,
+                "success": 0.9375,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          },
+          "0.3": {
+            "n": 334,
+            "t95_s": 0.1336,
+            "converged": true,
+            "history": [
+              {
+                "n": 269,
+                "q95": 0.10944991555022557,
+                "success": 0.828125,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 323,
+                "q95": 0.09343269321967387,
+                "success": 0.9921875,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 282,
+                "q95": 0.10475785431226417,
+                "success": 0.8828125,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 310,
+                "q95": 0.10377039252953679,
+                "success": 0.90625,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 334,
+                "q95": 0.10041426678622586,
+                "success": 0.9453125,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          }
+        }
+      },
+      "evaluation": {
+        "phase_locked_RQS": {
+          "n": 284,
+          "tau_us": 400,
+          "x_fraction": 0.1,
+          "trials": 400,
+          "q95": 0.10180774612367344,
+          "median": 0.07434335590235569,
+          "success": 0.93,
+          "active_time_s": 0.11359999999999999,
+          "estimated_t95_s": 0.118,
+          "estimated_n": 295,
+          "budget_agreement": 0.03873239436619718,
+          "floor_bound": false,
+          "converged": true,
+          "ml_applied": 0,
+          "failures": [],
+          "history": [
+            {
+              "n": 284,
+              "q95": 0.10180774612367344,
+              "success": 0.93
+            }
+          ]
+        },
+        "free_running_RQS": {
+          "n": 312,
+          "tau_us": 400,
+          "x_fraction": 0.1,
+          "trials": 400,
+          "q95": 0.09755611585412922,
+          "median": 0.07215107278737862,
+          "success": 0.9625,
+          "active_time_s": 0.1248,
+          "estimated_t95_s": 0.11879999999999999,
+          "estimated_n": 297,
+          "budget_agreement": 0.04807692307692308,
+          "floor_bound": false,
+          "converged": true,
+          "ml_applied": 0,
+          "failures": [],
+          "history": [
+            {
+              "n": 267,
+              "q95": 0.10806599185669323,
+              "success": 0.895
+            },
+            {
+              "n": 312,
+              "q95": 0.09755611585412922,
+              "success": 0.9625
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "noiseless",
+      "norm": 0.2,
+      "N": 200,
+      "calibration": {
+        "tau_us": 600,
+        "x_fraction": 0.2,
+        "free": {
+          "n": 296,
+          "t95_s": 0.17759999999999998,
+          "converged": true,
+          "history": [
+            {
+              "n": 296,
+              "q95": 0.10064031300522934,
+              "success": 0.9453125,
+              "ml_applied": 0,
+              "failures": []
+            }
+          ]
+        },
+        "locked": {
+          "n": 296,
+          "t95_s": 0.17759999999999998,
+          "converged": true,
+          "history": [
+            {
+              "n": 296,
+              "q95": 0.1012166898077166,
+              "success": 0.9375,
+              "ml_applied": 0,
+              "failures": []
+            }
+          ]
+        },
+        "ml_only": null,
+        "duration_candidates": {
+          "600": {
+            "n": 296,
+            "t95_s": 0.17759999999999998,
+            "converged": false,
+            "next_n": 323,
+            "history": [
+              {
+                "n": 256,
+                "q95": 0.11676726045531768,
+                "success": 0.796875,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 350,
+                "q95": 0.09269020535266453,
+                "success": 0.9765625,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 301,
+                "q95": 0.10304165102737059,
+                "success": 0.9296875,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 320,
+                "q95": 0.0960390835626155,
+                "success": 0.984375,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 296,
+                "q95": 0.10434498122103426,
+                "success": 0.921875,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          },
+          "560": {
+            "n": 318,
+            "t95_s": 0.17808,
+            "converged": true,
+            "history": [
+              {
+                "n": 256,
+                "q95": 0.11873271741514449,
+                "success": 0.7109375,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 361,
+                "q95": 0.09128837506452964,
+                "success": 0.9765625,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 301,
+                "q95": 0.10852420504701253,
+                "success": 0.8984375,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 355,
+                "q95": 0.09455172671989745,
+                "success": 0.984375,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 318,
+                "q95": 0.10101444116811183,
+                "success": 0.9375,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          },
+          "640": {
+            "n": 312,
+            "t95_s": 0.19967999999999997,
+            "converged": true,
+            "history": [
+              {
+                "n": 256,
+                "q95": 0.11034942717532428,
+                "success": 0.875,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 312,
+                "q95": 0.09871078615163496,
+                "success": 0.953125,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          }
+        },
+        "fraction_candidates": {
+          "0.1": {
+            "n": 336,
+            "t95_s": 0.20159999999999997,
+            "converged": false,
+            "next_n": 354,
+            "history": [
+              {
+                "n": 296,
+                "q95": 0.10540660952215597,
+                "success": 0.9140625,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 329,
+                "q95": 0.10566036441681712,
+                "success": 0.921875,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 368,
+                "q95": 0.09115447990120333,
+                "success": 0.9765625,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 306,
+                "q95": 0.10466906526623933,
+                "success": 0.9296875,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 336,
+                "q95": 0.10252298119759465,
+                "success": 0.9453125,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          },
+          "0.2": {
+            "n": 296,
+            "t95_s": 0.17759999999999998,
+            "converged": true,
+            "history": [
+              {
+                "n": 296,
+                "q95": 0.10064031300522934,
+                "success": 0.9453125,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          },
+          "0.3": {
+            "n": 364,
+            "t95_s": 0.21839999999999998,
+            "converged": true,
+            "history": [
+              {
+                "n": 296,
+                "q95": 0.11185362341307285,
+                "success": 0.8828125,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 371,
+                "q95": 0.09338032239827798,
+                "success": 0.984375,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 324,
+                "q95": 0.105918356109311,
+                "success": 0.90625,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 364,
+                "q95": 0.0992942772230229,
+                "success": 0.953125,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          }
+        }
+      },
+      "evaluation": {
+        "phase_locked_RQS": {
+          "n": 320,
+          "tau_us": 600,
+          "x_fraction": 0.2,
+          "trials": 400,
+          "q95": 0.0985122560861909,
+          "median": 0.07711769671806853,
+          "success": 0.9525,
+          "active_time_s": 0.19199999999999998,
+          "estimated_t95_s": 0.1866,
+          "estimated_n": 311,
+          "budget_agreement": 0.028125,
+          "floor_bound": false,
+          "converged": true,
+          "ml_applied": 0,
+          "failures": [],
+          "history": [
+            {
+              "n": 296,
+              "q95": 0.10384157064635136,
+              "success": 0.92
+            },
+            {
+              "n": 320,
+              "q95": 0.0985122560861909,
+              "success": 0.9525
+            }
+          ]
+        },
+        "free_running_RQS": {
+          "n": 296,
+          "tau_us": 600,
+          "x_fraction": 0.2,
+          "trials": 400,
+          "q95": 0.10178105885484183,
+          "median": 0.08010936408650975,
+          "success": 0.93,
+          "active_time_s": 0.17759999999999998,
+          "estimated_t95_s": 0.18419999999999997,
+          "estimated_n": 307,
+          "budget_agreement": 0.037162162162162164,
+          "floor_bound": false,
+          "converged": true,
+          "ml_applied": 0,
+          "failures": [],
+          "history": [
+            {
+              "n": 296,
+              "q95": 0.10178105885484183,
+              "success": 0.93
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "noiseless",
+      "norm": 0.2,
+      "N": 300,
+      "calibration": {
+        "tau_us": 720,
+        "x_fraction": 0.1,
+        "free": {
+          "n": 324,
+          "t95_s": 0.23328,
+          "converged": true,
+          "history": [
+            {
+              "n": 324,
+              "q95": 0.10111352264875968,
+              "success": 0.9375,
+              "ml_applied": 0,
+              "failures": []
+            }
+          ]
+        },
+        "locked": {
+          "n": 324,
+          "t95_s": 0.23328,
+          "converged": true,
+          "history": [
+            {
+              "n": 324,
+              "q95": 0.10125979540664122,
+              "success": 0.9453125,
+              "ml_applied": 0,
+              "failures": []
+            }
+          ]
+        },
+        "ml_only": null,
+        "duration_candidates": {
+          "720": {
+            "n": 324,
+            "t95_s": 0.23328,
+            "converged": true,
+            "history": [
+              {
+                "n": 256,
+                "q95": 0.11233982485663338,
+                "success": 0.75,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 324,
+                "q95": 0.09979390956658636,
+                "success": 0.9453125,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          },
+          "680": {
+            "n": 364,
+            "t95_s": 0.24752,
+            "converged": true,
+            "history": [
+              {
+                "n": 256,
+                "q95": 0.11419432729490184,
+                "success": 0.6953125,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 334,
+                "q95": 0.10426638757976184,
+                "success": 0.90625,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 364,
+                "q95": 0.09967063637031477,
+                "success": 0.9453125,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          },
+          "760": {
+            "n": 333,
+            "t95_s": 0.25307999999999997,
+            "converged": true,
+            "history": [
+              {
+                "n": 256,
+                "q95": 0.11422400392721614,
+                "success": 0.8046875,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 335,
+                "q95": 0.0966409012603444,
+                "success": 0.9765625,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 313,
+                "q95": 0.10311158333418971,
+                "success": 0.9140625,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 333,
+                "q95": 0.09753402493820994,
+                "success": 0.96875,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          }
+        },
+        "fraction_candidates": {
+          "0.1": {
+            "n": 324,
+            "t95_s": 0.23328,
+            "converged": true,
+            "history": [
+              {
+                "n": 324,
+                "q95": 0.10111352264875968,
+                "success": 0.9375,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          },
+          "0.2": {
+            "n": 344,
+            "t95_s": 0.24767999999999998,
+            "converged": true,
+            "history": [
+              {
+                "n": 324,
+                "q95": 0.10303530569145067,
+                "success": 0.9140625,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 344,
+                "q95": 0.09946801589496937,
+                "success": 0.953125,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          },
+          "0.3": {
+            "n": 382,
+            "t95_s": 0.27503999999999995,
+            "converged": true,
+            "history": [
+              {
+                "n": 324,
+                "q95": 0.10850758331528708,
+                "success": 0.8515625,
+                "ml_applied": 0,
+                "failures": []
+              },
+              {
+                "n": 382,
+                "q95": 0.09812560752384752,
+                "success": 0.9765625,
+                "ml_applied": 0,
+                "failures": []
+              }
+            ]
+          }
+        }
+      },
+      "evaluation": {
+        "phase_locked_RQS": {
+          "n": 324,
+          "tau_us": 720,
+          "x_fraction": 0.1,
+          "trials": 400,
+          "q95": 0.10240249938244031,
+          "median": 0.07563849003298098,
+          "success": 0.94,
+          "active_time_s": 0.23328,
+          "estimated_t95_s": 0.2448,
+          "estimated_n": 340,
+          "budget_agreement": 0.04938271604938271,
+          "floor_bound": false,
+          "converged": true,
+          "ml_applied": 0,
+          "failures": [],
+          "history": [
+            {
+              "n": 324,
+              "q95": 0.10240249938244031,
+              "success": 0.94
+            }
+          ]
+        },
+        "free_running_RQS": {
+          "n": 324,
+          "tau_us": 720,
+          "x_fraction": 0.1,
+          "trials": 400,
+          "q95": 0.10234382331242188,
+          "median": 0.07551593987789196,
+          "success": 0.9325,
+          "active_time_s": 0.23328,
+          "estimated_t95_s": 0.2448,
+          "estimated_n": 340,
+          "budget_agreement": 0.04938271604938271,
+          "floor_bound": false,
+          "converged": true,
+          "ml_applied": 0,
+          "failures": [],
+          "history": [
+            {
+              "n": 324,
+              "q95": 0.10234382331242188,
+              "success": 0.9325
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "slopes": {
+    "noiseless_0.2_free_running_RQS": 0.6836750145064407,
+    "noiseless_0.2_phase_locked_RQS": 0.6978833578138094
+  }
+}

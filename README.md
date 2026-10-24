@@ -155,8 +155,19 @@ plan = R.plan_acquisition(pool, n_shots=20_000, field_mode="free_running",
 The export has one row per shot. Fill both `plus` (0 or 1) and actual
 `start_time_s` in the counts CSV, using elapsed seconds from a common stable
 clock origin. The decoder uses measured times even when they differ from the
-planned schedule. `R.decode(plan, counts)` automatically selects timestamped
-likelihood reconstruction for this mode. Relative pulse timings stay unchanged.
+planned schedule. `R.decode(plan, counts)` now selects free-running **RQS**:
+whiten each response in the pool frame, rotate that back-projection to the
+measured start, then apply the shared contrast guard and per-tone correction.
+It needs at least one X and one Y shot, without a `6*N` shot floor. Relative
+pulse timings stay unchanged.
+
+`method="TIMESTAMPED-ML"` adds constrained likelihood refinement with the moment
+estimate as an additional starting point. Below `6*N` shots or with insufficient
+Y-response rank, it returns RQS with `ml_applied=False` and a
+`refinement_skipped_reason`. Missing timestamps and actual fit failures still
+raise errors. `TimedOutcomes(raw_values, actual_start_times)` also accepts one
+continuous raw value in `[-1,1]` per timestamp; do not combine different phases.
+See the [scaling benchmark](benchmarks/free_running_scaling.py).
 
 For phase-locked acquisitions, RQS uses approximate moment inversion with a per-tone correction; RQS-ML adds
 a local likelihood fit. The notebook includes simulation, population-bias checks,

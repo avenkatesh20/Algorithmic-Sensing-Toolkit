@@ -1,16 +1,17 @@
 """Uniform random acquisition, raw counts or means, and reusable observables."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from collections.abc import Mapping, Sequence
 import hashlib
 import json
 import warnings
 
 import numpy as np
+from scipy.linalg import cho_solve
 
 from .pulses import Pool, integer
-from ._estimator import moment_estimate, polish
-from ._timestamped import validate_times, fit as fit_timestamped
+from ._estimator import moment_estimate, finish_moment, polish
+from ._timestamped import validate_times, fit as fit_timestamped, RefinementUnavailable
 
 
 @dataclass(frozen=True)
@@ -65,6 +66,7 @@ class Estimate:
     fitted_contrast: float | None
     fit_converged: bool | None = None
     response_condition: float | None = None
+    refinement_skipped_reason: str | None = None
 
 
 @dataclass(frozen=True)
@@ -73,6 +75,18 @@ class TimedCounts:
 
     positive_counts: dict[str, int]
     start_times_s: dict[str, float]
+
+
+@dataclass(frozen=True)
+class TimedOutcomes:
+    """Raw values in [-1,1] and actual starts, one value per acquisition row.
+
+    Each value must belong to its one recorded starting phase. This does not
+    permit averaging shots taken at different phases into a single timestamp.
+    """
+
+    values: Mapping[str, float] | Sequence[float] | np.ndarray
+    start_times_s: Mapping[str, float] | Sequence[float] | np.ndarray
 
 
 @dataclass(frozen=True)
@@ -105,7 +119,7 @@ def validate_averages(plan, averages):
     """Resolve means/repetitions without rounding averaged outcomes to counts."""
     validate_plan(plan)
     if plan.field_mode != "phase_locked":
-        raise ValueError("Averaged outcomes require phase_locked acquisition: freely running shots at different phases need individual actual timestamps and counts.")
+        raise ValueError("Averaged outcomes require phase_locked acquisition: freely running shots at different phases need individual actual timestamps and values.")
     values = _row_values(plan, averages.means, "mean")
     try:
         values = np.asarray(values, float)
@@ -136,8 +150,9 @@ def validate_plan(plan):
     seen = set()
     for i, row in enumerate(plan.rows):
         index = integer(row["sequence_index"], "sequence_index")
-        q = plan.pool.sequence(index)
-        expected = q.initial_sign*(-1)**len(q.switch_times_s) if row["basis"] == "Y" else 1
+        if index >= len(plan.pool.Z):
+            raise ValueError("sequence_index is outside the pool.")
+        expected = int(plan.pool.y_outcome_signs[index]) if row["basis"] == "Y" else 1
         expected_id = f"shot_{i}" if plan.field_mode == "free_running" else f"{row['basis']}_{index}"
         if (row["basis"] not in ("X", "Y") or row["row_id"] in seen
                 or row["row_id"] != expected_id
@@ -164,7 +179,7 @@ def plan_acquisition(pool, *, n_shots, x_fraction=.2, seed=5,
     row per shot, with interleaved random X/Y bases and nominal start timestamps.
     Supply a full start schedule or a shot period; actual timestamps go in counts.
     """
-    n_shots = integer(n_shots, "n_shots", 4)
+    n_shots = integer(n_shots, "n_shots", 2 if field_mode == "free_running" else 4)
     if not np.isfinite(x_fraction) or not 0 < x_fraction < 1:
         raise ValueError("x_fraction must lie strictly between 0 and 1.")
     nx = min(n_shots-1, max(1, int(round(n_shots*x_fraction))))
@@ -187,8 +202,7 @@ def plan_acquisition(pool, *, n_shots, x_fraction=.2, seed=5,
         bases = np.full(n_shots, "Y"); bases[rng.choice(n_shots, nx, replace=False)] = "X"
         for i, (index, basis, start) in enumerate(zip(indices, bases, starts)):
             index = int(index)
-            q = pool.sequence(index)
-            sign = q.initial_sign*(-1)**len(q.switch_times_s) if basis == "Y" else 1
+            sign = int(pool.y_outcome_signs[index]) if basis == "Y" else 1
             rows.append(dict(row_id=f"shot_{i}", sequence_index=index, basis=str(basis),
                              shots=1, outcome_sign=sign, start_time_s=float(start)))
         plan = AcquisitionPlan(pool, tuple(rows), seed, field_mode)
@@ -202,8 +216,7 @@ def plan_acquisition(pool, *, n_shots, x_fraction=.2, seed=5,
         multiplicities = np.bincount(rng.integers(len(pool.Z), size=shots), minlength=len(pool.Z))
         for index in np.flatnonzero(multiplicities):
             index = int(index)
-            q = pool.sequence(index)
-            sign = q.initial_sign*(-1)**len(q.switch_times_s) if basis == "Y" else 1
+            sign = int(pool.y_outcome_signs[index]) if basis == "Y" else 1
             rows.append(dict(row_id=f"{basis}_{index}", sequence_index=index, basis=basis,
                              shots=int(multiplicities[index]), outcome_sign=sign))
     plan = AcquisitionPlan(pool, tuple(rows), int(seed))
@@ -216,6 +229,8 @@ def validate_counts(plan, counts):
     if plan.field_mode == "free_running":
         if not isinstance(counts, TimedCounts):
             raise ValueError("Freely running data require TimedCounts with actual start timestamps.")
+        if counts.start_times_s is None:
+            raise ValueError("Supply actual start timestamps for every freely running outcome.")
         _times(plan, counts.start_times_s)
         positive = counts.positive_counts
     else:
@@ -261,16 +276,58 @@ def _values(pool, amplitudes, cosine_weights, sine_weights):
 
 
 def _timed_estimate(plan, positive, times, method, cosine_weights, sine_weights):
-    a, contrast, mu, condition = fit_timestamped(plan.pool, plan.rows, positive, times)
+    method = "RQS" if method is None else method
+    if method not in ("RQS", "TIMESTAMPED-ML"):
+        raise ValueError("Freely running data use method='RQS' or 'TIMESTAMPED-ML'.")
+    a, floor, mu = _timed_moment(plan.pool, plan.rows, positive, times)
+    contrast, condition, converged, skipped = None, None, None, None
+    applied = False
+    if method == "TIMESTAMPED-ML":
+        try:
+            a, contrast, _, condition = fit_timestamped(plan.pool, plan.rows, positive, times,
+                                                       moment_start=a)
+            applied, converged = True, True
+        except RefinementUnavailable as exc:
+            skipped = str(exc)
     values = _values(plan.pool, a, cosine_weights, sine_weights)
-    return Estimate(tuple(a.tolist()), values, method, mu, None, False, True, contrast, True, condition)
+    return Estimate(tuple(a.tolist()), values, method, mu, float(floor), bool(mu < floor),
+                    applied, contrast, converged, condition, skipped)
 
 
-def population_estimate(pool, amplitudes, *, cosine_weights=None, sine_weights=None, start_times_s=None):
+def _timed_moment(pool, rows, positive, times):
+    """Whiten in the bank frame, THEN rotate each Y back-projection to its start."""
+    is_y = np.array([r["basis"] == "Y" for r in rows])
+    indices = np.array([r["sequence_index"] for r in rows])
+    shots = np.array([r["shots"] for r in rows])
+    raw = np.array([2*positive[r["row_id"]]/r["shots"]-1 for r in rows])-pool.experiment.readout_bias
+    signs = np.array([r["outcome_sign"] for r in rows])
+    mu = float(np.average(raw[~is_y], weights=shots[~is_y]))
+    selected = np.flatnonzero(is_y)
+    back = np.zeros(2*pool.N)
+    half = len(pool.sequences)
+    # Repeated acquisitions reuse a <=128 MB bank-frame solve; larger banks
+    # retain the bounded per-batch solve. Negative entries need no extra cache.
+    if half*2*pool.N <= 16_000_000 and not hasattr(pool, "_back_projection"):
+        pool._back_projection = cho_solve(pool.chol, pool.Z[:half].T).T
+    for begin in range(0, len(selected), 512):
+        take = selected[begin:begin+512]
+        if hasattr(pool, "_back_projection"):
+            ii = indices[take]
+            u = pool._back_projection[ii % half]*np.where(ii < half, 1., -1.)[:, None]
+        else:
+            u = cho_solve(pool.chol, pool.Z[indices[take]].T).T
+        rotated = pool.rotate_vectors(u, np.asarray(times)[take])
+        back += (raw[take]*signs[take]*shots[take])@rotated
+    a, floor = finish_moment(pool, back/shots[is_y].sum(), mu)
+    return a, floor, mu
+
+
+def population_estimate(pool, amplitudes, *, cosine_weights=None, sine_weights=None,
+                        start_times_s=None, method=None):
     """Noise-free inversion diagnostic for a pool or timestamped acquisition plan.
 
-    Freely running plans use exact per-shot outcome probabilities in the same
-    likelihood fit, without inserting the true amplitudes into reconstruction.
+    Freely running plans use exact per-shot probabilities in RQS (default) or
+    optional TIMESTAMPED-ML; waveform/schedule sampling variation remains.
     """
     if isinstance(pool, AcquisitionPlan):
         plan = pool
@@ -281,7 +338,10 @@ def population_estimate(pool, amplitudes, *, cosine_weights=None, sine_weights=N
             times = _times(plan, start_times_s)
             probabilities = _timed_probabilities(plan, a, times)
             positive = {r["row_id"]: float(p) for r, p in zip(plan.rows, probabilities)}
-            return _timed_estimate(plan, positive, times, "TIMESTAMPED-ML-population", cosine_weights, sine_weights)
+            result = _timed_estimate(plan, positive, times, method, cosine_weights, sine_weights)
+            return replace(result, method=result.method+"-population")
+    if method not in (None, "RQS"):
+        raise ValueError("A phase-locked population check uses method='RQS'.")
     if start_times_s is not None:
         raise ValueError("Per-shot timestamps require a freely running acquisition plan.")
     a = _amplitudes(pool, amplitudes)
@@ -326,13 +386,26 @@ def simulate(plan, amplitudes, *, seed=42, start_times_s=None):
 
 
 def decode(plan, counts, *, method=None, cosine_weights=None, sine_weights=None):
-    """Decode count mappings, AveragedOutcomes, or an ordered array of raw means.
+    """Decode counts, timestamped raw values, or phase-locked averaged outcomes.
 
     Weights do not alter the saved acquisition or amplitude reconstruction.
     Without weights, new query-independent plans return values=().
-    Mean-valued input requires phase_locked acquisition. For mean mappings use
-    decode_averages, so a +1 count is never confused with a mean of +1.
+    Untimestamped mean arrays require phase_locked acquisition; freely running
+    values use TimedOutcomes. For mean mappings use decode_averages, so a +1
+    count is never confused with a mean of +1.
     """
+    if isinstance(counts, TimedOutcomes):
+        validate_plan(plan)
+        if plan.field_mode != "free_running":
+            raise ValueError("TimedOutcomes require field_mode='free_running'.")
+        if counts.start_times_s is None:
+            raise ValueError("Supply actual start timestamps for every freely running outcome.")
+        values = np.asarray(_row_values(plan, counts.values, "value"), float)
+        if not np.isfinite(values).all() or np.any(abs(values) > 1):
+            raise ValueError("Timed raw values must be finite numbers in [-1, 1].")
+        positive = {r["row_id"]: float((1+v)/2) for r, v in zip(plan.rows, values)}
+        return _timed_estimate(plan, positive, _times(plan, counts.start_times_s), method,
+                               cosine_weights, sine_weights)
     if isinstance(counts, AveragedOutcomes) or not isinstance(counts, (Mapping, TimedCounts)):
         averages = counts if isinstance(counts, AveragedOutcomes) else AveragedOutcomes(counts)
         averages = validate_averages(plan, averages)
@@ -340,10 +413,8 @@ def decode(plan, counts, *, method=None, cosine_weights=None, sine_weights=None)
                              cosine_weights, sine_weights)
     validate_counts(plan, counts)
     if plan.field_mode == "free_running":
-        if method not in (None, "TIMESTAMPED-ML"):
-            raise ValueError("Freely running data use method='TIMESTAMPED-ML' with actual per-shot responses.")
         return _timed_estimate(plan, counts.positive_counts, _times(plan, counts.start_times_s),
-                               "TIMESTAMPED-ML", cosine_weights, sine_weights)
+                               method, cosine_weights, sine_weights)
     means = {r["row_id"]: 2*counts[r["row_id"]]/r["shots"]-1 for r in plan.rows}
     repetitions = {r["row_id"]: r["shots"] for r in plan.rows}
     return _decode_means(plan, means, repetitions, method, cosine_weights, sine_weights)

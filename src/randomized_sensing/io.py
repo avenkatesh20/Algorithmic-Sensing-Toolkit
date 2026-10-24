@@ -98,10 +98,15 @@ The decoder uses actual timestamps, including delays from the planned schedule."
 only for a fixed field. The tone phases at EVERY trigger must match start_time_s
 relative to the same phase origin. Phase-lock/reset the source; trigger waiting
 time is not predicted. Do not reuse a plan at arbitrary unknown starting phases."""
-    estimation = """TIMESTAMPED-ML rotates each realized response to its measured start time and
-jointly fits amplitudes and contrast to the binary likelihood, within the
-amplitude norm bound. It is a local fit, not a global optimum or confidence
-certificate. A full-rank Y response design and at least 3*2N shots are required.""" if running else """RQS uses approximate moment-law inversion with per-tone correction; RQS-ML
+    estimation = """RQS is the default: whiten each response in the bank frame, then rotate
+that back-projection to its actual start. Apply the shared X-mean guard and
+per-tone correction. At least one X and one Y shot are required; there is no
+6N shot floor for the moment estimate. Finite-pool/moment-law bias may remain.
+TIMESTAMPED-ML optionally refines amplitudes and contrast with a constrained
+binary likelihood, adding the moment estimate to the legacy three starts.
+Below 3*2N shots or with insufficient Y-response rank it returns RQS and sets
+ml_applied=False with a refinement_skipped_reason. Actual fit failures raise.
+Neither method certifies accuracy, confidence, or a unique/global optimum.""" if running else """RQS uses approximate moment-law inversion with per-tone correction; RQS-ML
 adds local likelihood refinement. No uniform accuracy/confidence is certified.
 T2/visibility set simulation contrast and the small-X-mean guard only; contrast
 cancels in the unguarded moment ratio."""

@@ -13,6 +13,8 @@ from ._grid import CellGrid, fft_grid
 
 
 def integer(value, name, minimum=0):
+    if type(value) is int and value >= minimum:
+        return value
     if isinstance(value, bool) or not isinstance(value, Integral) or value < minimum:
         raise ValueError(f"{name} must be an integer >= {minimum}.")
     return int(value)
@@ -49,6 +51,8 @@ class Pool:
         self.synthesis_method = "fft" if layout is not None else "dense"
         self.chol = cho_factor(self.Sigma)
         self.lam_max = float(eigenvalues[-1])
+        signs = np.array([q.initial_sign*(-1)**len(q.switch_times_s) for q in self.sequences], dtype=np.int8)
+        self.y_outcome_signs = np.r_[signs, -signs]
 
     def sequence(self, index):
         index = integer(index, "sequence_index")
@@ -71,11 +75,19 @@ class Pool:
                 or np.any(indices < 0) or np.any(indices >= len(self.Z))
                 or not np.isfinite(times).all() or np.any(times < 0)):
             raise ValueError("Supply matching valid sequence indices and nonnegative finite start times.")
+        return self.rotate_vectors(self.Z[indices], times)
+
+    def rotate_vectors(self, vectors, start_times_s):
+        """Rotate arbitrary (..., 2N) bank-frame vectors to matching actual starts."""
+        base = np.asarray(vectors, float)
+        times = np.asarray(start_times_s, float)
+        if (base.shape != times.shape+(2*self.N,) or not np.isfinite(base).all()
+                or not np.isfinite(times).all() or np.any(times < 0)):
+            raise ValueError("Supply finite (..., 2N) vectors and matching nonnegative start times.")
         delta = times.astype(np.longdouble)-np.longdouble(self.start_time_s)
         cycles = np.remainder(delta[..., None]*np.asarray(self.experiment.frequencies_hz, np.longdouble), 1)
         angle = 2*np.arccos(np.longdouble(-1))*cycles
         c, s = np.asarray(np.cos(angle), float), np.asarray(np.sin(angle), float)
-        base = self.Z[indices]
         x, y = base[..., :self.N], base[..., self.N:]
         return np.concatenate((x*c-y*s, x*s+y*c), axis=-1)
 

@@ -37,6 +37,29 @@ def test_fully_periodic_tones_use_unpadded_fft():
     np.testing.assert_allclose(grid.samples(theta), dense, rtol=1e-9, atol=1e-10)
 
 
+def test_long_shots_use_natural_period_and_fold_repaired_cells_exactly():
+    f = 10e6+(np.arange(4)-1.5)*25e3
+    e = R.Experiment(tuple(f), 28e3, clock_s=2.5e-9)
+    grid = _grid.CellGrid(e, 280e-6, 123e-9, 2.5e-9, 112000)
+    assert grid.fft[1] == 32000 < grid.length
+    theta = np.random.default_rng(4).uniform(0, 2*np.pi, (5, 4))
+    t = 123e-9+(np.arange(grid.length)+.5)*grid.tick
+    dense = np.cos(theta)@np.cos(2*np.pi*f[:, None]*t)-np.sin(theta)@np.sin(2*np.pi*f[:, None]*t)
+    np.testing.assert_allclose(grid.samples(theta), dense, rtol=1e-9, atol=1e-10)
+    patterns = np.where(grid.samples(theta) >= 0, 1, -1).astype(np.int8)
+    for pattern in patterns:
+        _repair(pattern, 8)
+    # Simulate a boundary repair that destroys periodicity. Folding must still
+    # integrate the actual cells, including a partial final period.
+    patterns[0, :19] *= -1
+    patterns[1, -23:] *= -1
+    vectors = grid.responses(patterns)
+    for s, vector in zip(patterns, vectors):
+        switches = (np.flatnonzero(s[1:] != s[:-1])+1)*grid.tick
+        expected = s[0]*response(e, switches, 280e-6, 123e-9)
+        np.testing.assert_allclose(vector, expected, rtol=0, atol=1e-10)
+
+
 def legacy_sequences(experiment, duration, count, start, seed, cap):
     """Original 32-pattern dense sampler; response() is the independent verifier."""
     tick = experiment.clock_s

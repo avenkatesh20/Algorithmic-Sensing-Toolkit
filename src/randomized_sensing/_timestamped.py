@@ -4,6 +4,10 @@ import numpy as np
 from scipy.optimize import minimize
 
 
+class RefinementUnavailable(ValueError):
+    """Insufficient shots or Y rank for a full unregularized likelihood fit."""
+
+
 def validate_times(times, count, duration_s):
     times = np.asarray(times, float)
     if times.shape != (count,) or not np.isfinite(times).all() or np.any(times < 0):
@@ -32,24 +36,24 @@ def objective(z, is_y, signs, shots, plus, bias):
     return evaluate
 
 
-def fit(pool, rows, positive_counts, start_times_s):
+def fit(pool, rows, positive_counts, start_times_s, *, moment_start=None):
     """Local constrained ML from measured outcomes and actual per-shot responses.
 
-    Three deterministic starts use only recorded data and calibrated settings.
+    Three legacy starts and an optional moment start use only measured data.
     No Gaussian moment identity or per-tone law correction is assumed here.
     """
     indices = np.array([r["sequence_index"] for r in rows])
-    z = pool.responses_at(indices, start_times_s)
     is_y = np.array([r["basis"] == "Y" for r in rows])
     signs = np.array([r["outcome_sign"] for r in rows])
     shots = np.array([r["shots"] for r in rows], float)
     plus = np.array([positive_counts[r["row_id"]] for r in rows], float)
-    d, e = z.shape[1], pool.experiment
+    d, e = 2*pool.N, pool.experiment
     if len(rows) < 3*d or is_y.sum() < d:
-        raise ValueError("Timestamped ML requires at least 3*2N shots and 2N Y shots.")
+        raise RefinementUnavailable("Timestamped ML requires at least 3*2N shots and 2N Y shots.")
+    z = pool.responses_at(indices, start_times_s)
     singular = np.linalg.svd(z[is_y], compute_uv=False)
     if singular[-1] <= 1e-10*singular[0]:
-        raise ValueError("Timestamped Y responses do not span all amplitudes; change the schedule or add shots.")
+        raise RefinementUnavailable("Timestamped Y responses do not span all amplitudes; change the schedule or add shots.")
     condition = float(singular[0]/singular[-1])
     contrast = e.contrast(pool.duration_s)
     if contrast <= 1e-12:
@@ -67,7 +71,10 @@ def fit(pool, rows, positive_counts, start_times_s):
                       jac=lambda x: np.r_[-2*x[:-1]/radius**2, 0.])
     results = []
     messages = []
-    for a0 in (linear, ratio, np.zeros(d)):
+    starts = (linear, ratio, np.zeros(d))
+    if moment_start is not None:
+        starts += (np.asarray(moment_start, float),)
+    for a0 in starts:
         a0 = a0*min(1., .9*radius/max(np.linalg.norm(a0), 1e-300))
         initial = np.r_[a0, np.clip(contrast, lower, upper)]
         result = minimize(evaluate, initial, jac=True, method="SLSQP",
